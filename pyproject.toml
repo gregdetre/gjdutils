@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "gdutils"
 version = "0.2.0"
-description = "A collection of useful utility functions"
+description = "A collection of useful utility functions (strings, dates, data science, types, etc)"
 authors = ["Greg Detre <greg@gregdetre.co.uk>"]
+homepage = "https://github.com/gregdetre/gdutils"
+repository = "https://github.com/gregdetre/gdutils"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
