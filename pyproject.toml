@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gdutils"
-version = "0.2.0"
+version = "0.3.0"
 description = "A collection of useful utility functions (strings, dates, data science, types, etc)"
 authors = [
     "Greg Detre <greg@gregdetre.co.uk>"
