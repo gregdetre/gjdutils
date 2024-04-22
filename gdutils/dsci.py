@@ -1,7 +1,11 @@
+from collections import Counter
+import itertools
 import numpy as np
 import pandas as pd
 import random
+from scipy import spatial, sparse
 import sys
+from typing import Any, Iterable, Sequence
 
 
 def init_random_seeds():
@@ -39,30 +43,6 @@ def jaccard_similarity(list1, list2) -> float:
     return intersection / union
 
 
-def calc_proportion_longest_common_substring(descriptions: Sequence[str]) -> float:
-    # find length of longest string
-    longest = max([len(description) for description in descriptions])
-    if longest == 0:
-        return 0.0
-
-    if len(descriptions) == 2:
-        # TODO try this out instead (both behaviour and speed)
-        # return fwfuzz.partial_ratio(descriptions[0], descriptions[1]) / 100
-        # this would be faster, but I can't install pylcs on my machine
-        # len_substring = pylcs.lcs2(descriptions[0], descriptions[1])
-        # so fall back on the original implementation
-        len_substring = len(longest_substring_multi(descriptions))
-    else:
-        len_substring = len(longest_substring_multi(descriptions))
-
-    if len_substring <= 1:
-        # decided to count a single letter as a 0
-        return 0.0
-    val = len_substring / longest
-    assert 0 <= val <= 1
-    return val
-
-
 def calc_proportion_identical(lst: Any) -> float:
     """
     Returns a value between 0 and 1 for the uniformity of the values
@@ -87,7 +67,7 @@ def calc_proportion_identical(lst: Any) -> float:
         return most_common / len(lst)
 
 
-def calc_normalised_std_tightness(vals) -> float:
+def calc_normalised_std_tightness(vals: Sequence[float]) -> float:
     """
     The standard deviation STD is in the same units as VALS, i.e.
     it's unnormalised. We normalise by the (absolute) mean,
@@ -100,30 +80,27 @@ def calc_normalised_std_tightness(vals) -> float:
     [19,  1, 40, 20] -> 0.31
     [ 9,  1, 70,  0] -> 0
     """
-    if len(vals) == 1:
+    n = len(vals)
+    if n == 0:
+        raise Exception("Empty")
+    elif n == 1:
         return 1.0
-    average = abs(sum(vals) / len(vals))
+    if n == 2:
+        deviation = abs(vals[0] - vals[1])
+    else:
+        deviation = float(np.std(vals))
+
+    average = abs(sum(vals) / n)
     if average < 0.01:
         # e.g. mean([-50, 50]) -> 0
         # risking a divide-by-zero, which could produce unstable results.
         # better to default to treating as not part of the cluster?
         return 0
 
-    if len(vals) == 2:
-        deviation = abs(vals[0] - vals[1])
-    else:
-        deviation = np.std(vals)
     normalised_std = deviation / average
     tightness = 1 - min(1, normalised_std)
     assert 0 <= tightness <= 1
     return tightness
-
-
-def is_same_sign(x1, x2):
-    if x1 > 0 and x2 > 0:
-        return True
-    if x1 < 0 and x2 < 0:
-        return True
 
 
 def calc_pair_amounts_closeness(amounts: Sequence[float]) -> float:
@@ -169,3 +146,63 @@ def convert_sim_dist_oneminus(val: float) -> float:
     out = 1 - val
     assert 0 <= out <= 1
     return out
+
+
+def square_df_from_square(sq, features):
+    df = pd.DataFrame(sq)
+    # create a 'Feature' column
+    df["Feature"] = features
+    rename_dict = dict(zip(range(len(features)), features))
+    df.rename(columns=rename_dict, inplace=True)
+    # df = df.reindex_axis(['Feature'] + features, axis=1)
+    df = df.set_index("Feature")
+    return df
+
+
+def long_df_from_flat(dists_flat, features):
+    combos = [(f1, f2) for f1, f2 in itertools.permutations(features, 2)]
+    assert len(combos) == len(dists_flat)
+    dists_triplet = [
+        (combo[0], combo[1], dist) for combo, dist in zip(combos, dists_flat)
+    ]
+    dists_long_df = pd.DataFrame(dists_triplet, columns=["Feature", "Brand", "Score"])
+    return dists_long_df
+
+
+def square_df_from_flat(dists_flat, features):
+    nFeatures = len(features)
+    dists_sq = spatial.distance.squareform(np.array(dists_flat))
+    assert dists_sq.shape == (nFeatures, nFeatures)
+    return square_df_from_square(dists_sq, features)
+
+
+def pairwise_local(data, distance_func, format="long"):
+    """
+    Returns squareform pairwise distances DataFrame (run symmetrically).
+
+    DATA should be a iterable of arrays (e.g. a list of bitarrays).
+    Pairs of rows from DATA will be passed into DISTANCE_FUNC, which
+    should return a float.
+
+    If format 'square' (default), returns an (nFeatures x nFeatures)
+    square distances matrix.
+
+    If format 'flat', returns a vector of distances (that could be fed
+    into scipy squareform to produce the 'square' version).
+
+    If format 'long', returns recs weighted-sum model format.
+    """
+    features = sorted(data.keys())
+    dists_flat = [
+        distance_func(data[f1], data[f2])
+        for f1, f2 in itertools.permutations(features, 2)
+    ]
+    if format == "flat":
+        return dists_flat
+    if format == "long":
+        return long_df_from_flat(dists_flat, features)
+    elif format == "square":
+        dists_sq_df = square_df_from_flat(dists_flat, features)
+        return dists_sq_df
+    else:
+        raise Exception("Unknown FORMAT %s" % format)
