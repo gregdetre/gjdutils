@@ -1,6 +1,8 @@
 [project]
+# case-insensitive
 name = "GDutils"
-version = "0.1.0"
+# https://hatch.pypa.io/latest/config/metadata/
+dynamic = ["version"]
 authors = [
   { name="Greg Detre", email="greg@gregdetre.com" },
 ]
@@ -13,18 +15,63 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Utilities",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
 ]
-Homepage = "https://github.com/gregdetre/gdutils"
-Repository = "https://github.com/gregdetre/gdutils"
-Issues = "https://github.com/gregdetre/gdutils/issues"
-
-license = "MIT"
 keywords = ["utilities", "strings", "dates", "data science", "web development", "llm", "ai",]
 
-# [tool.poetry.dev-dependencies]
-# pytest = "^5.2"
-# black = "^21.12b0"
+dependencies = [
+    "ipython",
+    "jinja2",
+]
+
+[project.optional-dependencies]
+audio_lang = [
+    "azure-cognitiveservices-speech",
+    "cachetools",
+    "google-cloud-texttospeech",
+    "google-cloud-translate",
+    "elevenlabs",
+    # for playing mp3
+    "playsound",
+    # for playing mp3
+    "pygame",
+    # for playing mp3
+    "python-vlc",
+]
+dev = [
+    "black",
+    "pytest",
+]
+dt = [
+    "humanize",
+    "pendulum",
+]
+html_web = [
+    "bs4",
+]
+llm = [
+    "cachetools",
+    # "llm", no longer using this
+    "openai",
+    "pillow", # for images
+]
+
+[project.urls]
+Homepage = "https://github.com/gregdetre/gdutils"
+Repository = "https://github.com/gregdetre/gdutils"
+# Issues = "https://github.com/gregdetre/gdutils/issues"
+# Documentation
+# Changelog
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "dist/",
+    "gdutils/obsolete/",
+    "gdutils/todo/",
+    "tests/fixme_*.py",
+]

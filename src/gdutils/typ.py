@@ -1,5 +1,8 @@
 from inspect import isfunction
 
+# these are occasionally useful for if statements,
+# though probably better to rely on type-hinting wherever possible
+
 
 def isint(f, tol=0.00000001):
     """
