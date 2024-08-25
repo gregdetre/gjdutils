@@ -6,6 +6,16 @@ from gdutils.strings import is_string
 from gdutils.cmd import subproc
 
 
+def split_filen(filen: Path | str):
+    """
+    Splits a filename into its path, stem, and extension (without dot), e.g.
+
+        split_filen('data/blah.mp4') -> ('data', 'blah', 'mp4')
+    """
+    filen = Path(filen)
+    return filen.parent, filen.stem, filen.suffix[1:] if filen.suffix else ""
+
+
 def create_dir_if_not_exists(dirn: str):
     if not os.path.exists(dirn):
         os.makedirs(dirn)
