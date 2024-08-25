@@ -1,5 +1,11 @@
 from typing import Union
 
+# this doesn't support numpy's numeric types, but it's a good stopgap for now.
+# there doesn't appear to be a perfect, agreed solution
+#
+# https://stackoverflow.com/questions/60616802/how-to-type-hint-a-generic-numeric-type-in-python
+Numeric = Union[int, float]
+
 
 def percent(num, denom):
     return (100 * (num / float(denom))) if denom else 0
