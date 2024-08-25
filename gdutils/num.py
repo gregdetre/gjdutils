@@ -1,6 +1,3 @@
-from cachetools import cached, LRUCache, TTLCache
-import numpy as np
-import pandas as pd
 from typing import Union
 
 
@@ -12,7 +9,6 @@ def percent_str(num, denom):
     return str(percent) + "%"
 
 
-@cached({})
 def discretise(
     val,
     increment: Union[int, float] = 0.1,
@@ -20,7 +16,12 @@ def discretise(
     upper: Union[int, float] = 1.0,
     enforce_range: bool = False,
 ):
-    @cached({})
+    """
+    You will probably want to cache this.
+    """
+    import numpy as np
+    import pandas as pd
+
     def calc_increments(increment, lower, upper):
         assert (
             lower <= increment <= upper
