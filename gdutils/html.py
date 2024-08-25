@@ -1,8 +1,8 @@
-from typing import Optional
 from bs4 import BeautifulSoup
-
-
-# see also: prettyhtml() in blocks/decorators.py
+from lxml import html as lxml_html
+from lxml.html import tostring, fromstring
+from lxml.etree import Element, _Element as ElementType
+from typing import Optional, Iterable, Union
 
 
 def remove_html_tags(html: str):
@@ -30,10 +30,13 @@ def compare_html(h1, h2):
     assert h1p == h2p
 
 
-def simplify_html(h):
+def remove_attrs_from_html(h):
+    """
+    Gets rid of all the attrs in the html.
+    """
     soup = BeautifulSoup(h, features="lxml")
     for t in soup.recursiveChildGenerator():
-        t.attrs = {}
+        t.attrs = {}  # type: ignore
     # whitespace_from_linebreaks(
     # contents_of_body(soup)
     # )
