@@ -1,5 +1,5 @@
 from gdutils.dicts import print_dict
-from typ import isfunction
+from gdutils.typ import isfunction
 
 
 def print_locals(

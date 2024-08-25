@@ -4,8 +4,8 @@ cachetools
 elevenlabs
 google-cloud-texttospeech
 google-cloud-translate
-humanize
-ipdb
+# for some date functionality
+# humanize
 jinja2
 keyboard
 llm
