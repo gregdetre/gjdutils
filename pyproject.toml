@@ -76,3 +76,6 @@ exclude = [
     "gdutils/todo/",
     "tests/fixme_*.py",
 ]
+
+[tool.hatch.version]
+path = "__VERSION__.py"
