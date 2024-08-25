@@ -1,8 +1,6 @@
 from pathlib import Path
-import webbrowser
-
-# import urlparse
 from urllib import parse as urlparse
+import webbrowser
 
 
 def webbrowser_open(filen: str | Path, browser=None):
@@ -29,12 +27,13 @@ def trunc_url(url):
     #                              fragment='')
     scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
     # ditch the SCHEME and NETLOC
-    return path + params
+    # PARAMS are an arcane part that comes after a semi-colon
+    return path  # + params
 
 
 def validate_request_args(args, defaults):
     """
-    DEFAULTS = dict of allowed parameters, with the keys
+    DEFAULTS = dict of allowed query parameters, with the keys
     being the allowed query-string-parameter-keys and values
     as their defaults.
     """
