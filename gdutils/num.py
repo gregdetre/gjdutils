@@ -51,3 +51,20 @@ def discretise(
     #   1.00 -> 1.0
     discretised = increments[idx - 1]
     return discretised
+
+
+def ordinal(n: int):
+    """
+    e.g 1 -> "1st", 103 -> "103rd"
+    """
+    # from https://claude.ai/chat/87fad336-e0fa-4074-aed4-f4e57ed20bb7
+
+    # TESTED:
+    # for i in [0, 1, 2, 3, 4, 10, 11, 12, 13, 22, 78, 103, 103231, 103235]:
+    #     print(i, ordinal(i))
+    assert n >= 0
+    if 10 <= n % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
