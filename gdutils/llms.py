@@ -1,183 +1,31 @@
-import llm
 import json
-import openai
+from openai import OpenAI
 import os
 from pprint import pprint
 from typing import Any, Literal, Optional
 
-from gdutils.llm_utils import proc_llm_out_json
+from gdutils.llm_utils import image_to_base64, proc_llm_out_json
 from gdutils.prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from gdutils.rand import DEFAULT_RANDOM_SEED
 from gdutils.strings import jinja_render
-
-
-# from https://github.com/openai/openai-python
 
 
 # openai.api_key = OPENAI_API_KEY
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL_NAME_GPT4 = "gpt-4"
 MODEL_NAME_GPT35 = "gpt-3.5-turbo"
-MODEL_NAME_GPT4_TURBO = "gpt-4-1106-preview"
-DEFAULT_MODEL_NAME = MODEL_NAME_GPT4_TURBO
-DEFAULT_MODEL = llm.get_model(DEFAULT_MODEL_NAME)
-DEFAULT_MODEL.key = os.environ.get("OPENAI_API_KEY")
+MODEL_NAME_GPT4_TURBO = "gpt-4-turbo"  # -1106-preview"
+MODEL_NAME_GPT4O = "gpt-4o"
+DEFAULT_MODEL_NAME = MODEL_NAME_GPT4O
 
-
-def model_from_model_name(model_name: Optional[str] = None, verbose: int = 0):
-    if model_name is None:
-        model = DEFAULT_MODEL
-    else:
-        if verbose > 0:
-            print("MODEL:", model_name)
-        model = llm.get_model(model_name)
-        model.key = OPENAI_API_KEY
-    return model, model_name
-
-
-def llm_prompt(
-    prompt: str,
-    model_name: Optional[str] = None,
-    temperature: Optional[float] = 0.01,
-    max_tokens: Optional[int] = None,
-    to_json: bool = False,
-    verbose: int = 1,
-):
-    model, _ = model_from_model_name(model_name)
-    response = model.prompt(prompt, temperature=temperature, max_tokens=max_tokens)
-    if verbose > 0:
-        for chunk in response:
-            print(chunk, end="")
-        print()
-    llm_out = response.text()
-    llm_json = proc_llm_out_json(llm_out) if to_json else None
-    extra = {
-        "prompt": prompt,
-        "model_name": model_name,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "response": response,
-        "llm_out": llm_out,
-        "llm_json": llm_json,
-    }
-    return llm_json if to_json else llm_out, extra
-
-
-def llm_prompt_json(
-    prompt: str,
-    functions: list[dict],
-    model_name: str = MODEL_NAME_GPT4_TURBO,
-    temperature: Optional[float] = 0.01,
-    verbose: int = 1,
-):
-    """
-    Based on https://platform.openai.com/docs/guides/gpt/function-calling
-
-    Simon Willison's LLM library doesn't seem to support function calling,
-    so we're using the OpenAI Python API directly.
-
-    Doesn't actually call the function - we're just using the function-calling
-    API to ensure we get back json that matches our defined schema.
-
-    e.g. functions = [
-        {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                },
-                "required": ["location"],
-            },
-        }
-    ]
-    """
-    # model, model_name = model_from_model_name(model_name)
-    assert functions, "PROMPT_JSON requires at least one function"
-    messages = [{"role": "user", "content": prompt}]
-
-    response = openai.ChatCompletion.create(
-        model=model_name,
-        messages=messages,
-        # if you try and set this to None or [] you get an error, so we'll require at least one actual function (see assert above)
-        functions=functions,
-        temperature=temperature,
-        seed=DEFAULT_RANDOM_SEED,
-    )
-    response_message = response["choices"][0]["message"]  # type: ignore
-
-    if response_message.get("function_call"):
-        function_name = response_message["function_call"]["name"]
-        function_args = json.loads(response_message["function_call"]["arguments"])
-        llm_out = {
-            "role": "function",
-            "name": function_name,
-            "args": function_args,
-            # "content": function_response,
-        }
-
-        # if call_function:
-        #     Step 3: call the function
-        #     # Note: the JSON response may not always be valid; be sure to handle errors
-        #     available_functions = {
-        #         "get_current_weather": get_current_weather,
-        #     }  # only one function in this example, but you can have multiple
-        #     function_to_call = available_functions[function_name]
-        #     function_response = function_to_call(
-        #         location=function_args.get("location"),
-        #         unit=function_args.get("unit"),
-        #     )
-
-        # Step 4: send the info on the function call and function response to GPT
-        messages.append(response_message)  # extend conversation with assistant's reply
-        messages.append(
-            {
-                "role": "function",
-                "name": function_name,
-                # "content": function_response,
-            }
-        )
-        # if call_function:
-        #     )  # extend conversation with function response
-        #     second_response = openai.ChatCompletion.create(
-        #         model="gpt-3.5-turbo-0613",
-        #         messages=messages,
-        #         seed=DEFAULT_RANDOM_SEED,
-        #     )  # get a new response from GPT where it can see the function response
-        #     return second_response
-    else:
-        function_name = None
-        function_args = None
-        llm_out = response_message["content"]
-
-    extra = {
-        "prompt": prompt,
-        "model_name": model_name,
-        "functions": functions,
-        "temperature": temperature,
-        "messages": messages,
-        "response": response,
-        "response_message": response_message,
-        "function_name": function_name,
-        "function_args": function_args,
-    }
-    if verbose > 0:
-        if isinstance(llm_out, str):
-            print(llm_out)
-        else:
-            pprint(llm_out)
-    return llm_out, extra
-
+# from https://github.com/openai/openai-python
+ToolChoiceTyps = Literal["auto", "required", "none"]
 
 GranularityTyps = Literal[
     "short phrase of just a few words",
     "short title",
     "short sentence",
+    "at most a sentence",
     "sentence or two",
     "few sentences",
     "single short paragraph",
@@ -186,17 +34,179 @@ GranularityTyps = Literal[
 ]
 
 
+def contents_for_images(image_filens: list[str], resize_target_size_kb: int):
+    # assert (
+    #     1 <= len(image_filens) <= 10
+    # ), "You can only provide between 1 and 10 images"
+    base64_images = []
+    new_contents = []
+    for image_filen in image_filens:
+        base64_image = image_to_base64(
+            image_filen, resize_target_size_kb=resize_target_size_kb
+        )
+        filen_content = {
+            "type": "text",
+            "text": f"Filename: {image_filen}",
+        }
+        img_content = {
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
+        }
+        base64_images.append(base64_image)
+        new_contents.extend([filen_content, img_content])
+    return new_contents, base64_images
+
+
+def call_gpt(
+    prompt: str,
+    tools: Optional[list[dict]] = None,
+    tool_choice: Optional[ToolChoiceTyps] = None,
+    image_filens: Optional[list[str]] = None,
+    image_resize_target_size_kb: Optional[int] = 100,
+    client: Optional[OpenAI] = None,
+    model: Optional[str] = None,
+    temperature: Optional[float] = 0.001,
+    # max_tokens: Optional[int] = None,
+    # stop: Optional[list[str]] = None,
+    response_json: bool = False,
+    seed: Optional[int] = DEFAULT_RANDOM_SEED,
+):
+    """
+    Usage:
+
+        client = OpenAI(
+            api_key=OPENAI_API_KEY,
+        )
+        msg, tools, extra = call_gpt_uncached(client, "What is the capital of France?")
+
+        @cachier()
+        def call_gpt_cached(
+            inp: str, tools: Optional[list[dict]] = None, tool_choice: ToolChoiceTyps = "auto"
+        ):
+            return call_gpt(client=client, inp=inp, tools=tools, tool_choice=tool_choice)
+
+    https://platform.openai.com/docs/api-reference/chat/create?lang=python
+    SAMPLE_TOOLS = [
+        {
+            "type": "function",
+            "function": {
+                "name": "get_current_weather",
+                "description": "Get the current weather in a given location",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "The city and state, e.g. San Francisco, CA",
+                        },
+                        "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                    },
+                    "required": ["location"],
+                },
+            },
+        }
+    ]
+
+    The messages for images could look like this:
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Filename: cat.jpg"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAA..."
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Filename: dog.png"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA..."
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Describe each of these images, referring to them by their filenames:"
+                },
+            ]
+        }
+    ]
+    """
+
+    extra = locals()
+    extra.pop("client")  # to avoid caching issues, and because it includes the API key
+    if client is None:
+        client = OpenAI(api_key=OPENAI_API_KEY)
+    if not tools:
+        # otherwise you get a 400
+        tool_choice = None
+    if model is None:
+        model = DEFAULT_MODEL_NAME
+    if image_filens is None:
+        base64_images = None
+        image_contents = []
+    else:
+        assert (
+            image_resize_target_size_kb is not None
+        ), "You must provide a resize_target_size_kb"
+        image_contents, base64_images = contents_for_images(
+            image_filens, resize_target_size_kb=image_resize_target_size_kb
+        )
+    prompt_content = {"type": "text", "text": prompt}
+    contents = image_contents + [prompt_content]
+    messages = [{"role": "user", "content": contents}]
+    response_format = {"type": "json_object"} if response_json else None
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,  # type: ignore
+        tools=tools,  # type: ignore
+        tool_choice=tool_choice,  # type: ignore
+        temperature=temperature,
+        # max_tokens=max_tokens,  # for some reason, setting this to None causes an error
+        # stop=stop,  # for some reason, setting this to None causes an error
+        seed=seed,
+        response_format=response_format,  # type: ignore
+    )
+    msg = response.choices[0].message.content  # could be empty
+    if response_json:
+        msg = json.loads(msg)
+    tool_calls = response.choices[0].message.tool_calls  # could be None or a list
+    extra.update(
+        {
+            "response": response.model_dump(),
+            "msg": msg,
+            "tool_calls": tool_calls,
+            "model": model,
+            "base64_images": base64_images,
+            "contents": contents,
+            # "client": client,
+        }
+    )
+    return msg, tool_calls, extra
+
+
 def llm_generate_summary(
     txt_or_txts: str | list[str],
     granularity: Optional[GranularityTyps] = None,
+    full_txt_or_html: Optional[str] = None,
     n_truncate_words=None,
     model_name: Optional[str] = None,
     max_tokens: Optional[int] = None,
-    verbose: int = 1,
+    verbose: int = 0,
 ):
     """
     TXT_OR_TXTS can either be a single string,
     or a list of strings (in which case it tries to find the summary that unifies them).
+
+    FULL_TXT_OR_HTML is the full text or HTML that the text is a part of.
+    It is used to provide context to the summarisation.
 
     TODO: I combined summarisation of text and list into one, but I'm not convinced
     it was such a good idea. It has made things unwieldy. I'm mostly focused on the
@@ -238,13 +248,15 @@ def llm_generate_summary(
         )  # type: ignore
         return prompt
 
-    if model_name is None:
-        model_name = "gpt-3.5-turbo"
     extra = {"input": locals()}
+    if full_txt_or_html is not None:
+        raise NotImplementedError("full_txt_or_html is not yet implemented")
     context = {
-        "granularity": "Adjust the length of your summary appropriately, based on the length and complexity of the text. For example, if the text is a paragraph, write a sentence or two. If it's a page, write a paragraph or so. If it's a book, write a page."
-        if granularity is None
-        else f"Write at most a {granularity}."
+        "granularity": (
+            "Adjust the length of your summary appropriately, based on the length and complexity of the text. For example, if the text is a paragraph, write a sentence or two. If it's a page, write a paragraph or so. If it's a book, write a page."
+            if granularity is None
+            else f"Write at most a {granularity}."
+        )
     }
     assert txt_or_txts, "txt_or_txts must be non-empty"
     if isinstance(txt_or_txts, str):
@@ -254,55 +266,31 @@ def llm_generate_summary(
     else:
         raise TypeError("txt_or_txts must be str or list[str]: %s" % type(txt_or_txts))
 
-    llm_out, llm_extra = llm_prompt(
-        prompt, model_name=model_name, max_tokens=max_tokens, verbose=0
-    )
+    assert max_tokens is None, "max_tokens is not yet implemented"
+    msg, tools, extra = call_gpt(
+        prompt=prompt, model=model_name
+    )  # , max_tokens=max_tokens)
     extra.update(
         {
             "context": context,
             "prompt": prompt,
-            "llm_out": llm_out,
-            "llm_extra": llm_extra,
+            "llm_msg": msg,
+            "llm_tools": tools,
+            "llm_extra": extra,
         }  # type: ignore
     )
     if verbose > 0:
-        print("Summary:", llm_out)
+        print("Summary:", msg)
     if verbose > 1:
         print(f"PROMPT:\n{prompt}")
     extra = {
         "model_name": model_name,
         "prompt": prompt,
     }
-    return llm_out, extra
-
-
-def llm_fix_json(broken_j: str, model_name: str = "gpt-3.5-turbo"):
-    broken_j = broken_j.strip()
-    prompt = (
-        """
-Here is some output from an LLM that is supposed to be pure, valid JSON, but it is broken. Return valid JSON, stripping away any extraneous commentary or prose, but maintaining the structure and meaning of the original data as closely as possible.
-
-If the json is already valid, return it unchanged.
-
-Err on the side of caution: if you're confused about what to do with the input, or if it's ambiguous how best to fix the json, or it is not possible to fix the json, or any other error or uncertainty, return 'ERROR'.
-
-----
-
-%s
-"""
-        % broken_j
-    )
-    prompt = prompt.strip()
-    fixed_j, extra = llm_prompt(prompt, model_name=model_name, temperature=0.001)
-    fixed_j = fixed_j.strip()  # type: ignore
-    try:
-        json.loads(fixed_j)
-        # TODO check that the before and after are similar lengths and substantially similar strings
-        return fixed_j
-    except:
-        raise
+    return msg, extra
 
 
 if __name__ == "__main__":
     # txt = prompt('What is the capital of France?')
-    txt = llm_prompt("What is the capital of France?")
+    msg, _, _ = call_gpt("What is the capital of France?")
+    print(msg)
