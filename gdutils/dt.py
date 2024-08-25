@@ -4,14 +4,18 @@ import pendulum
 from typing import Optional, Union
 
 
-def dt_str(dt: Optional[datetime] = None, seconds: bool = True) -> str:
+def dt_str(
+    dt: Optional[datetime] = None, seconds: bool = True, tz: Optional[str] = None
+) -> str:
     """
     e.g. 2020-Nov-18 at 7:39:20pm -> '201118_1939_20'
+
+    If TZ is None, defaults to UTC. Or set e.g. 'Europe/London'.
     """
     if dt is None:
-        dt = pendulum.now()
+        dt = pendulum.now(tz=tz)
     else:
-        dt = pendulum.instance(dt)
+        dt = pendulum.instance(dt, tz=tz)
     format = "YYMMDD_HHmm_ss" if seconds else "YYMMDD_HHmm"
     return dt.format(format)
 

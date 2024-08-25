@@ -1,6 +1,6 @@
 import json
 from typing import Optional
-from gdutils.llms import llm_fix_json
+from .llms import llm_fix_json
 
 
 def jsonify(x):

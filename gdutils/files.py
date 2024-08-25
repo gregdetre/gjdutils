@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from typing import Iterable, Sequence
 
-from gdutils.strings import is_string
-from gdutils.cmd import subproc
+from .cmd import subproc
+from .strings import is_string
 
 
 def split_filen(filen: Path | str):

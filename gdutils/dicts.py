@@ -1,5 +1,6 @@
+import json
 from typing import Iterable, Optional
-from gdutils.strings import is_string
+from .strings import is_string
 
 
 def compare_dict(d1, d2, ignore_underscores=True):
@@ -27,6 +28,8 @@ def dict_from_module(mod):
     """
     if is_string(mod):
         mod = __import__(mod)
+    else:
+        raise ValueError("Expected a string, got %s" % type(mod))
     return {k: v for k, v in mod.__dict__.items() if not k.startswith("__")}
 
 
@@ -52,19 +55,26 @@ def pop_safe(d, k, default=None):
 
 
 def whittle_dict(d, keys):
-    """
-    Returns D2, containing just the KEYS from dictionary D,
-    e.g.
-
-    whittle_dict({'a': 100, 'b': 200}, ['a']) -> {'a': 100}
-
-    Will raise an exception if any of KEYS aren't keys in D.
-
-    xxx - maybe this should instead do a copy, and delete any not needed???
-    """
     d2 = {}
     for k in keys:
         d2[k] = d[k]
+    return d2
+
+
+def these_fields_only(d: dict, fields: Iterable[str], required=True):
+    """
+    Returns D2, containing just the KEYS from dictionary D, e.g.
+
+      these_fields_only({'a': 100, 'b': 200}, ['a']) -> {'a': 100}
+
+    If REQUIRED, will raise an exception if any of KEYS aren't keys in D.
+    """
+    # used to be called WHITTLE_DICT
+    if required:
+        # will fail if any of the fields in FIELDS are missing from D
+        d2 = {k: d[k] for k in fields}
+    else:
+        d2 = {k: d[k] for k in fields if k in d}
     return d2
 
 
@@ -89,13 +99,17 @@ def truncate_dict(d: dict, n: Optional[int], reverse=False) -> dict:
 
 
 def combine_dicts(d1: dict, d2: dict, require_unique: bool = True) -> dict:
-    d1_keys = set(d1.keys())
-    d2_keys = set(d2.keys())
+    """
+    UPDATE: you can now do the simple version of this with `d1 | d2`
+    """
     if require_unique:
-        overlapping_k = d1_keys.intersection(d2_keys)
+        d1_keys = set(d1.keys())
+        d2_keys = set(d2.keys())
+        overlapping_k = set.intersection(d1_keys, d2_keys)
         assert not overlapping_k, "Overlapping keys: %s" % overlapping_k
-    d = d1.copy()
-    d.update(d2)
+    # d = d1.copy()
+    # d.update(d2)
+    d = d1 | d2
     # check we've maintained ordering. only makes sense if REQUIRE_UNIQUE is False
     # assert list(d1.keys()) + list(d2.keys()) == list(d.keys())
     return d
@@ -150,15 +164,6 @@ def rename_fields(d: dict, renames: dict):
     return d2
 
 
-def these_fields_only(d: dict, fields: Iterable[str], required=True):
-    if required:
-        # will fail if any of the fields in FIELDS are missing from D
-        d2 = {k: d[k] for k in fields}
-    else:
-        d2 = {k: d[k] for k in fields if k in d}
-    return d2
-
-
 def dict_from_list(lst: list[dict], key, skip_duplicates: bool = False):
     """
     Given a list of dicts LST, return a dict DIC where D[v] = an item IT in LST where lst[key]=v.
@@ -176,3 +181,7 @@ def dict_from_list(lst: list[dict], key, skip_duplicates: bool = False):
         assert v not in dic, f"Found duplicate key {v}"
         dic[v] = it
     return dic
+
+
+def pprint_dict(d: dict):
+    return print(json.dumps(d, indent=4))

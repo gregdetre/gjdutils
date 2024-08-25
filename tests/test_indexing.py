@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional
 
-from gdutils.indexing import (
+from .indexing import (
     loc_between,
     loc_for_insert_at,
     loc_for_insert_at2,
