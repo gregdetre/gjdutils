@@ -1,6 +1,5 @@
 from calendar import monthrange
 from datetime import datetime, date, timedelta
-from humanize import naturalday, naturaldelta
 import pendulum
 from typing import Optional, Union
 
@@ -150,6 +149,8 @@ def humanize_minutes(minutes: int):
         humanize_minutes(1500) -> 'a day'
     from https://github.com/python-humanize/humanize
     """
+    from humanize import naturalday, naturaldelta
+
     delta = timedelta(minutes=minutes)
     # minimum_unit="minutes" is not supported
     ndelta = naturaldelta(delta)

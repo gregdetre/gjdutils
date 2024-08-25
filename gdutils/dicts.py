@@ -1,8 +1,6 @@
 from typing import Iterable, Optional
 from gdutils.strings import is_string
 
-from sorteddict import SortedDict
-
 
 def compare_dict(d1, d2, ignore_underscores=True):
     """

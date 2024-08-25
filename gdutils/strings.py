@@ -1,9 +1,7 @@
-import numpy as np
 from six import string_types
 from string import punctuation
 import textwrap
 from typing import Optional, Sequence
-from jinja2 import Environment, StrictUndefined, Template
 
 
 def is_string(x):
@@ -90,6 +88,8 @@ def jinja_render(prompt_template: str, context: dict, strip=True):
 
     Will raise an error if CONTEXT is missing any variables.
     """
+    from jinja2 import Environment, StrictUndefined, Template
+
     env = Environment(undefined=StrictUndefined)
     template = env.from_string(prompt_template)
     rendered = template.render(context)
