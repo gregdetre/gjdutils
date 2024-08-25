@@ -7,13 +7,7 @@ from scipy import spatial, sparse
 import sys
 from typing import Any, Iterable, Sequence
 
-
-def init_random_seeds():
-    # always use the same seed, always initialise before you do anything else
-    RANDOM_SEED = 42
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    # faker.Faker.seed(RANDOM_SEED)
+from .rand import set_seeds
 
 
 def init_display_options():

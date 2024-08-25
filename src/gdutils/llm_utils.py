@@ -1,8 +1,8 @@
 import base64
 import io
+from PIL import Image
 import json
 from typing import Optional
-from PIL import Image
 
 
 def proc_llm_out_json(s: str):

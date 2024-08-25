@@ -4,10 +4,10 @@ import os
 from pprint import pprint
 from typing import Any, Literal, Optional
 
-from gdutils.llm_utils import image_to_base64, proc_llm_out_json
-from gdutils.prompt_templates import summarise_list_of_texts_as_one, summarise_text
-from gdutils.rand import DEFAULT_RANDOM_SEED
-from gdutils.strings import jinja_render
+from .llm_utils import image_to_base64, proc_llm_out_json
+from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
+from .rand import DEFAULT_RANDOM_SEED
+from .strings import jinja_render
 
 
 # openai.api_key = OPENAI_API_KEY

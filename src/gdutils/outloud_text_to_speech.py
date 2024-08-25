@@ -4,7 +4,7 @@ from google.cloud import texttospeech
 import os
 from typing import Optional
 
-from audios import play_mp3
+from .audios import play_mp3
 
 
 def outloud(

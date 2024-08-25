@@ -38,6 +38,7 @@ audio_lang = [
     "pygame",
     # for playing mp3
     "python-vlc",
+    "speech_recognition",
 ]
 dev = [
     "black",
