@@ -287,3 +287,10 @@ def weekly_iter(start, end):
         yield p, n
         p = n
         n = n + timedelta(days=7)
+
+
+def date_from_datetime(d: date, as_pendulum: bool = False):
+    if as_pendulum:
+        return pendulum.date(d.year, d.month, d.day)
+    else:
+        return datetime(d.year, d.month, d.day, hour=0, minute=0)

@@ -1,10 +1,9 @@
 import json
-from openai import OpenAI
+from openai import OpenAI, NOT_GIVEN
 import os
 from pprint import pprint
 from typing import Any, Literal, Optional
 
-from .llm_utils import image_to_base64, proc_llm_out_json
 from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from .rand import DEFAULT_RANDOM_SEED
 from .strings import jinja_render
@@ -16,7 +15,12 @@ MODEL_NAME_GPT4 = "gpt-4"
 MODEL_NAME_GPT35 = "gpt-3.5-turbo"
 MODEL_NAME_GPT4_TURBO = "gpt-4-turbo"  # -1106-preview"
 MODEL_NAME_GPT4O = "gpt-4o"
+MODEL_NAME_GPT4O_MINI = "gpt-4o-mini"
+MODEL_NAME_O1 = "o1-preview"
+MODEL_NAME_O1_MINI = "o1-mini"
 DEFAULT_MODEL_NAME = MODEL_NAME_GPT4O
+
+MODELS_NO_TOOLS = [MODEL_NAME_O1, MODEL_NAME_O1_MINI]
 
 # from https://github.com/openai/openai-python
 ToolChoiceTyps = Literal["auto", "required", "none"]
@@ -34,42 +38,20 @@ GranularityTyps = Literal[
 ]
 
 
-def contents_for_images(image_filens: list[str], resize_target_size_kb: int):
-    # assert (
-    #     1 <= len(image_filens) <= 10
-    # ), "You can only provide between 1 and 10 images"
-    base64_images = []
-    new_contents = []
-    for image_filen in image_filens:
-        base64_image = image_to_base64(
-            image_filen, resize_target_size_kb=resize_target_size_kb
-        )
-        filen_content = {
-            "type": "text",
-            "text": f"Filename: {image_filen}",
-        }
-        img_content = {
-            "type": "image_url",
-            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
-        }
-        base64_images.append(base64_image)
-        new_contents.extend([filen_content, img_content])
-    return new_contents, base64_images
-
-
-def call_gpt(
+def call_openai_gpt(
     prompt: str,
     tools: Optional[list[dict]] = None,
     tool_choice: Optional[ToolChoiceTyps] = None,
-    image_filens: Optional[list[str]] = None,
+    image_filens: str | list[str] | None = None,
     image_resize_target_size_kb: Optional[int] = 100,
     client: Optional[OpenAI] = None,
     model: Optional[str] = None,
     temperature: Optional[float] = 0.001,
-    # max_tokens: Optional[int] = None,
+    max_tokens: int | None = None,
     # stop: Optional[list[str]] = None,
     response_json: bool = False,
     seed: Optional[int] = DEFAULT_RANDOM_SEED,
+    verbose: int = 0,
 ):
     """
     Usage:
@@ -139,6 +121,7 @@ def call_gpt(
         }
     ]
     """
+    from gdutils.llm_utils import contents_for_images
 
     extra = locals()
     extra.pop("client")  # to avoid caching issues, and because it includes the API key
@@ -153,30 +136,43 @@ def call_gpt(
         base64_images = None
         image_contents = []
     else:
+        if isinstance(image_filens, str):
+            image_filens = [image_filens]
         assert (
             image_resize_target_size_kb is not None
         ), "You must provide a resize_target_size_kb"
         image_contents, base64_images = contents_for_images(
             image_filens, resize_target_size_kb=image_resize_target_size_kb
         )
+
     prompt_content = {"type": "text", "text": prompt}
     contents = image_contents + [prompt_content]
     messages = [{"role": "user", "content": contents}]
     response_format = {"type": "json_object"} if response_json else None
+    if model in MODELS_NO_TOOLS:
+        assert (
+            tools is None
+        ), "You cannot provide tools for models that don't support them"
+        assert (
+            tool_choice is None
+        ), "You cannot provide tool_choice for models that don't support them"
+        tools, tool_choice = NOT_GIVEN, NOT_GIVEN  # type: ignore
+        # assert temperature is None, f"Temperature can't be set for {model}"
+        temperature = NOT_GIVEN  # type: ignore
     response = client.chat.completions.create(
         model=model,
         messages=messages,  # type: ignore
         tools=tools,  # type: ignore
         tool_choice=tool_choice,  # type: ignore
         temperature=temperature,
-        # max_tokens=max_tokens,  # for some reason, setting this to None causes an error
+        max_tokens=max_tokens if max_tokens is not None else NOT_GIVEN,
         # stop=stop,  # for some reason, setting this to None causes an error
         seed=seed,
         response_format=response_format,  # type: ignore
     )
     msg = response.choices[0].message.content  # could be empty
     if response_json:
-        msg = json.loads(msg)
+        msg = json.loads(msg)  # type: ignore
     tool_calls = response.choices[0].message.tool_calls  # could be None or a list
     extra.update(
         {
@@ -189,6 +185,13 @@ def call_gpt(
             # "client": client,
         }
     )
+    if verbose >= 2:
+        print(f"PROMPT:\n{prompt}")
+    if verbose >= 1:
+        print(f"LLM MESSAGE:\n{msg}")
+    if verbose >= 2:
+        print(f"TOOL CALLS:\n{tool_calls}")
+        print(f"LLM RESPONSE:\n{json.dumps(response.model_dump(), indent=2)}")
     return msg, tool_calls, extra
 
 
@@ -267,7 +270,7 @@ def llm_generate_summary(
         raise TypeError("txt_or_txts must be str or list[str]: %s" % type(txt_or_txts))
 
     assert max_tokens is None, "max_tokens is not yet implemented"
-    msg, tools, extra = call_gpt(
+    msg, tools, extra = call_openai_gpt(
         prompt=prompt, model=model_name
     )  # , max_tokens=max_tokens)
     extra.update(
@@ -292,5 +295,5 @@ def llm_generate_summary(
 
 if __name__ == "__main__":
     # txt = prompt('What is the capital of France?')
-    msg, _, _ = call_gpt("What is the capital of France?")
+    msg, _, _ = call_openai_gpt("What is the capital of France?")
     print(msg)

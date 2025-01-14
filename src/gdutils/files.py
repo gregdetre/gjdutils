@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
 from .cmd import subproc
-from .strings import is_string
+from .strings import is_string, PathOrStr
 
 
 def split_filen(filen: Path | str):
@@ -35,7 +35,7 @@ def validate_dir(dirn):
 
 
 def fulltext(
-    filens: Iterable[str],
+    filens: Sequence[str],
     patterns: list[str],
     dirn: str,
     file_ext: str,
@@ -89,7 +89,7 @@ def fulltext(
 
     if len(filens) > 0:
         # escape all the spaces with back-slashes
-        filens = [x.replace(" ", "\ ") for x in filens]
+        filens = [x.replace(" ", "\\ ") for x in filens]
 
         # convert to a space-delimited string (with spaces
         # escaped by backslashes), and each file prepended by the

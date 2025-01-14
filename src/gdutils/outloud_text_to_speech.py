@@ -1,10 +1,5 @@
-import azure.cognitiveservices.speech as speechsdk
-from elevenlabs import generate, play, save
-from google.cloud import texttospeech
 import os
 from typing import Optional
-
-from .audios import play_mp3
 
 
 def outloud(
@@ -48,6 +43,8 @@ def outloud(
     else:
         raise Exception(f"Unknown PROG '{prog}'")
     if play:
+        from .audios import play_mp3
+
         play_mp3(mp3_filen, prog="cli")
     return response
 
@@ -64,6 +61,8 @@ def outloud_azure(
     """
     from https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started-text-to-speech?pivots=programming-language-python&tabs=macos%2Cterminal
     """
+    import azure.cognitiveservices.speech as speechsdk
+
     # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
     speech_config = speechsdk.SpeechConfig(
         subscription=os.environ.get("SPEECH_KEY"),
@@ -125,6 +124,8 @@ def outloud_google(
     speed=None,  # or 'slow'
     verbose: int = 0,
 ):
+    from google.cloud import texttospeech
+
     bot_gender = bot_gender.lower() if bot_gender else None
     # not all genders supported for all languages. see https://cloud.google.com/text-to-speech/docs/voices
     if bot_gender is None or bot_gender == "neutral":
@@ -179,17 +180,48 @@ def outloud_google(
 
 
 def outloud_elevenlabs(
-    text: str, mp3_filen: str, bot_name: str, speed=None, verbose: int = 0
+    text: str,
+    api_key: Optional[str] = None,
+    mp3_filen: Optional[str] = None,
+    bot_name: Optional[str] = None,
+    model: str = "eleven_multilingual_v2",
+    # speed=None,
+    should_play: bool = False,
+    verbose: int = 0,
 ):
+    from elevenlabs import play, save
+    from elevenlabs.client import ElevenLabs
+
+    if api_key is None:
+        api_key = os.environ.get("ELEVENLABS_API_KEY")
+    # i should figure out a better way to handle playing an mp3 file
+    # assert (
+    #     not mp3_filen and should_play
+    # ), "Writing out uses up the bytes, so you can't then play"
+    assert model in ["eleven_multilingual_v2", "eleven_turbo_v2_5"]
+    # if speed is not None:
+    #     raise Exception(f"Unknown SPEED '{speed}'")
     if bot_name is None:
-        bot_name = "Matilda"
-    audio = generate(
+        bot_name = "Charlotte"  # slower
+
+    client = ElevenLabs(
+        api_key=api_key,
+    )
+    audio = client.generate(
         text=text,
         voice=bot_name,
-        model="eleven_multilingual_v2",
+        model=model,
     )
-    # play(audio)
-    save(audio, mp3_filen)  # type: ignore
+    if mp3_filen is not None:
+        save(audio, mp3_filen)  # type: ignore
+    if should_play:
+        if mp3_filen is None:
+            play(audio)
+        else:
+            # if you've already saved, it will consume the bytes
+            from .audios import play_mp3
+
+            play_mp3(mp3_filen, prog="cli")
     return audio
 
 

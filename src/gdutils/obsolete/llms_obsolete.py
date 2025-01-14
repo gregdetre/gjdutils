@@ -6,7 +6,7 @@ from pprint import pprint
 from typing import Any, Optional
 
 from gdutils.llm_utils import proc_llm_out_json
-from gdutils.llms import (
+from gdutils.llms_openai import (
     DEFAULT_MODEL_NAME,
     MODEL_NAME_GPT4_TURBO,
     OPENAI_API_KEY,

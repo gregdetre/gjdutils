@@ -1,7 +1,10 @@
+from pathlib import Path
 from six import string_types
 from string import punctuation
 import textwrap
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
+
+PathOrStr = Union[str, Path]
 
 
 def is_string(x):
@@ -80,7 +83,37 @@ def calc_proportion_longest_common_substring(descriptions: Sequence[str]) -> flo
     return val
 
 
-def jinja_render(prompt_template: str, context: dict, strip=True):
+def jinja_get_template_variables(template: str) -> set[str]:
+    """
+    Extract all variables expected by a Jinja2 template.
+
+    Args:
+        template_string (str): The Jinja2 template string to analyze
+
+    Returns:
+        set: A set of variable names found in the template
+
+    Example:
+        >>> template = "Hello {{ name }}! Your age is {{ age }}"
+        >>> get_template_variables(template)
+        {'name', 'age'}
+    """
+    # https://claude.ai/chat/3a2e9e93-c9cd-4b19-8313-ef7640e5971f
+    from jinja2 import Environment, meta
+
+    env = Environment()
+    ast = env.parse(template)
+    variables = meta.find_undeclared_variables(ast)
+    return variables
+
+
+def jinja_render(
+    prompt_template: str,
+    context: dict,
+    filesystem_loader: Optional[PathOrStr] = None,
+    check_surplus_context: bool = True,
+    strip=True,
+):
     """
     Render a Jinja template with the given dictionary, e.g.
 
@@ -88,13 +121,23 @@ def jinja_render(prompt_template: str, context: dict, strip=True):
 
     Will raise an error if CONTEXT is missing any variables.
     """
-    from jinja2 import Environment, StrictUndefined, Template
+    from jinja2 import Environment, FileSystemLoader, StrictUndefined, Template
 
-    env = Environment(undefined=StrictUndefined)
+    loader = None if filesystem_loader is None else FileSystemLoader(filesystem_loader)
+    env = Environment(loader=loader, undefined=StrictUndefined)
     template = env.from_string(prompt_template)
     rendered = template.render(context)
     if strip:
         rendered = rendered.strip()
+    if check_surplus_context:
+        # should it be an error if we have been provided more keys in the context
+        # than are used in the template? e.g. this is useful for noticing when the
+        # template has e.g. {myvar} with single instead of double braces
+        jinja_variables = jinja_get_template_variables(prompt_template)
+        surplus_context = set(context.keys()) - jinja_variables
+        if surplus_context:
+            raise ValueError(f"Surplus context: {surplus_context}")
+
     return rendered
 
 
@@ -131,14 +174,14 @@ def wrap_indent(s: str, indent_level: int = 0, sep="  "):
     return "\n".join(textwrap.wrap(s, initial_indent=spaces, subsequent_indent=spaces))
 
 
-# def indent(s: str, indent_txt: Optional[str] = None):
-#     if indent_txt is None:
-#         indent_txt = "    "
-#     return (
-#         textwrap.fill(s, subsequent_indent=indent_txt)
-#         if s and isinstance(s, str)
-#         else str(s)
-#     )
+def indent_without_wrap(s: str, indent_txt: Optional[str] = None):
+    if indent_txt is None:
+        indent_txt = "    "
+    return (
+        textwrap.fill(s, initial_indent=indent_txt, subsequent_indent=indent_txt)
+        if s and isinstance(s, str)
+        else str(s)
+    )
 
 
 def append_fullstop(s: str):

@@ -1,6 +1,8 @@
 import json
 from typing import Iterable, Optional
 
+from gdutils.strings import jinja_render
+
 from .strings import is_string
 
 
@@ -186,3 +188,31 @@ def dict_from_list(lst: list[dict], key, skip_duplicates: bool = False):
 
 def pprint_dict(d: dict):
     return print(json.dumps(d, indent=4))
+
+
+def dict_as_html(d: dict) -> str:
+    return jinja_render(
+        """
+<div class="dict-view">
+    <ul>
+    {% for key, value in d.items() %}
+        <li>
+            <strong>{{ key }}</strong>: 
+            {% if value is mapping %}
+                {{ dict_as_html(value) | safe }}
+            {% elif value is sequence and value is not string %}
+                <ul>
+                {% for item in value %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+""",
+        context={"d": d, "dict_as_html": dict_as_html},
+    )

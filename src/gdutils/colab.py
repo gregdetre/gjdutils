@@ -1,9 +1,9 @@
 import os
-import sys
 
+from .runtime import in_colab
 
 # https://stackoverflow.com/a/53586419/230523
-IN_COLAB = "google.colab" in sys.modules
+IN_COLAB = in_colab()
 # also specified in authortools_demo.ipynb
 GOOGLE_DRIVE_MOUNT_PATH = "/content/drive"
 GOOGLE_DRIVE_OUTPUT_PATH = os.path.join(

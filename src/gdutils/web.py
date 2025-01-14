@@ -2,9 +2,15 @@ from pathlib import Path
 from urllib import parse as urlparse
 import webbrowser
 
+from gdutils.strings import PathOrStr
 
-def webbrowser_open(filen: str | Path, browser=None):
-    # for some reason, the default webbrowser.open() doesn't work for me, so you may want to set browser to 'chrome'
+
+def webbrowser_open(filen: PathOrStr, browser=None):
+    """
+    For some reason, the default webbrowser.open() doesn't work for me, so you may want to set browser to 'chrome'
+    """
+    # I had an issue where it refused to open a non .html file
+    assert filen.endswith(".html"), "File must end with .html"
     if browser:
         browser = webbrowser.get(browser)
     else:

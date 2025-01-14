@@ -12,7 +12,7 @@ into timing stuff, this was the best I could come up with...
 To use:
 
     t = Stopwatch()
-    t.start_time()
+    # t.start()
     
     # do something
 
@@ -32,22 +32,21 @@ class Stopwatch:
 
     # stores the time the stopwatch was last looked at
     t1 = None
-    
 
-    def __init__(self):
+    def __init__(self, do_start: bool = True):
         self.t0 = 0
         self.t1 = 0
-
+        if do_start:
+            self.start()
 
     def start(self):
         """
         Stores the current time in t0.
         """
-        
-        self.t0 = time.time()
-        
 
-    def finish(self):
+        self.t0 = time.time()
+
+    def finish(self, milliseconds: bool = True):
         """
         Returns the elapsed duration in milliseconds. This
         stores the current time in t1, and calculates the
@@ -57,10 +56,9 @@ class Stopwatch:
 
         You have to call this in order to update t1.
         """
-        
-        self.t1 = time.time()
-        return self.milli()
 
+        self.t1 = time.time()
+        return self.milli() if milliseconds else self.seconds()
 
     def seconds(self):
         """
@@ -68,17 +66,14 @@ class Stopwatch:
         """
         return int(self.t1 - self.t0)
 
-        
     def milli(self):
         """
         Returns t1 - t0 in milliseconds. Does not update t1.
         """
         return int((self.t1 - self.t0) * 1000)
 
-        
     def micro(self):
         """
         Returns t1 - t0 in microseconds. Does not update t1.
         """
         return int((self.t1 - self.t0) * 1000000)
-

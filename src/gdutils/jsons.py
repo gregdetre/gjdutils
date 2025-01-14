@@ -15,6 +15,29 @@ def jsonify(x):
     return json.dumps(x, sort_keys=True, indent=4, default=json_dumper_robust)
 
 
+# from o-1
+# class RobustJSONEncoder(json.JSONEncoder):
+#     def __init__(self, *args, **kwargs):
+#         self.seen = set()
+#         super().__init__(*args, **kwargs)
+
+#     def default(self, obj):
+#         if id(obj) in self.seen:
+#             return None  # Replace circular references with None or a placeholder
+#         self.seen.add(id(obj))
+#         try:
+#             return obj.toJSON()
+#         except:
+#             try:
+#                 return str(obj)
+#             except:
+#                 return None
+
+
+# def jsonify(x):
+#     return json.dumps(x, cls=RobustJSONEncoder, sort_keys=True, indent=4)
+
+
 def to_json(
     inps: list,
     fields: Optional[list] = None,
