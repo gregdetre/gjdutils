@@ -1,117 +1,140 @@
+from rich.console import Console
 import subprocess
 import sys
+import time
+from typing import Union, Optional, Dict
+from pathlib import Path
+
+from gjdutils.shell import fatal_error_msg
 
 
-def run_cmd(cmd: str):
-    stdout = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).communicate()[0]
-    stdout = stdout.decode(sys.stdout.encoding or "UTF-8")
-    return stdout
+def run_cmd(
+    cmd: Union[str, list[str]],
+    before_msg: Optional[str] = None,
+    fatal_msg: Optional[str] = None,
+    verbose: int = 2,
+    replace_sys_python_executable: bool = True,
+    dry_run: bool = False,
+    **subprocess_kwargs,
+) -> tuple[int, str, Dict]:
+    """Run a shell command with enhanced output and error handling.
 
+    Args:
+        cmd: Command to run as string (shell=True) or list of strings (shell=False)
+        before_msg: Optional message to display before running command (green)
+        fatal_msg: Optional message to use if command fails (calls fatal_error_msg)
+        verbose: Output verbosity level:
+            0 = silent
+            1 = show before_msg if provided
+            2 = also show command being run (default)
+            3 = also show working directory and duration
+        replace_sys_python_executable: Replace 'python ' with sys.executable
+        dry_run: If True, only print what would be run
+        **subprocess_kwargs: Additional arguments passed to subprocess.run
 
-def run_cmd2(cmd: str, raise_error: bool = False, verbose: int = 0):
-    process = subprocess.run(
-        cmd,
-        shell=True,
-        check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    stdout = process.stdout
-    stderr = process.stderr
-    if stderr and raise_error:
-        raise Exception(stderr)
-    if verbose > 1:
-        print(f"{cmd=}")
-    if verbose > 0:
-        # print(f"{stdout=}")
-        print(stdout)
-        # print(error)
-    return stdout, stderr
+    Returns:
+        Tuple of (returncode, stdout, extra) where extra is a dict containing:
+        - stderr: Standard error output
+        - duration: Time taken to run command
+        - cmd_str: Final command string that was run
+        - cwd: Working directory
+        - input_args: Original function arguments
+        - subprocess_result: Full subprocess.CompletedProcess object
 
+    Examples:
+        Simple usage with string command:
+        >>> retcode, out, _ = run_cmd4("ls -l", before_msg="Listing files...")
+        Listing files...
+        $ ls -l
+        >>> print(out)
+        total 8
+        -rw-r--r-- 1 user user 2048 Mar 15 10:00 example.txt
 
-def subproc(
-    cmd,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    verbose=True,
-    throw_exception=True,
-):
+        Complex usage with list command and error handling:
+        >>> cmd = ["pytest", "tests/", "-v", "--cov"]
+        >>> retcode, out, extra = run_cmd4(
+        ...     cmd,
+        ...     before_msg="Running tests with coverage...",
+        ...     fatal_msg="Tests failed!",
+        ...     verbose=2,
+        ...     timeout=300,
+        ...     check=True
+        ... )
+        Running tests with coverage...
+        $ pytest tests/ -v --cov
+        === test session starts ===
+        ...
     """
-    Why can't python have a subproc function like this (like
-    matlab's 'unix')? Takes in a CMD, returns a RETCODE,
-    OUT_STR and ERR_STR strings, and the SUBPOPEN
-    subprocess.Popen object.
+    input_args = locals()
 
-    RETCODE = 0 (all is well)
-    RETCODE = -1 (caught an exception of some kind)
-    RETCODE = non-zero (the command ran, but the shell didn't like it)
+    console = Console()
 
-    If VERBOSE, then it will print CMD before running it,
-    and the OUT_STR and ERR_STR after running (if they're
-    non-empty).
+    start_time = time.time()
 
-    If THROW_EXCEPTION, will throw an exception if RETCODE is
-    non-zero. If not THROW_EXCEPTION, it'll just return the RETCODE
-    and it's up to you to check it.
+    # Convert list command to string if needed
+    cmd_str = " ".join(cmd) if isinstance(cmd, list) else cmd
 
-    Returns: RETCODE, OUT_STR, ERR_STR, SUBPOPEN
+    # Replace python executable if requested
+    if replace_sys_python_executable and cmd_str.startswith("python "):
+        cmd_str = f"{sys.executable} {cmd_str[7:]}"
 
-    N.B. this is more cautious than matlab's 'unix' command,
-    because its default is to throw an exception if there's
-    any kind of problem.
+    # Handle verbosity
+    if verbose >= 1 and before_msg:
+        console.print(f"[green]{before_msg}[/green]")
+    if verbose >= 2:
+        console.print(f"[white]$ {cmd_str}[/white]")
 
-    Update: this sucks if you want to use pipes (e.g. 'cat *
-    > blah'). In that case, I ended up just using
-    os.system().
+    # Handle dry run
+    if dry_run:
+        return (
+            0,
+            "",
+            {
+                "stderr": "",
+                "duration": 0,
+                "cmd_str": cmd_str,
+                "cwd": str(Path.cwd()),
+                "input_args": input_args,
+                "subprocess_result": None,
+            },
+        )
 
-    Usage e.g.:
+    # Set defaults for subprocess
+    subprocess_kwargs.setdefault("shell", isinstance(cmd, str))
+    subprocess_kwargs.setdefault("capture_output", True)
+    subprocess_kwargs.setdefault("text", True)
 
-        retcode, out_str, err_str, subpopen = subproc('ls')
+    try:
+        result = subprocess.run(
+            cmd if isinstance(cmd, list) else cmd_str,
+            **subprocess_kwargs,
+        )
+    except subprocess.TimeoutExpired as e:
+        if fatal_msg:
+            fatal_error_msg(
+                fatal_msg,
+                f"Command timed out after {subprocess_kwargs.get('timeout', '?')}s",
+            )
+        raise
 
-    N.B. This was written for Python 2 - there may be a better way now.
-    """
-    # from freex_sqlalchemy.py
+    duration = time.time() - start_time
 
-    if verbose > 0:
-        print(cmd)
+    # Show additional info at verbose level 3
+    if verbose >= 3:
+        console.print(f"[blue]Working directory: {Path.cwd()}[/blue]")
+        console.print(f"[blue]Duration: {duration:.2f}s[/blue]")
 
-    # it's ugly having two different routes for
-    # throw_exception, but i don't know how to store and
-    # return the exception traceback
-    if throw_exception:
-        # call subprocess.Popen nakedly, without bothering to catch exceptions
-        subpopen = subprocess.Popen(cmd, shell=True, stdout=stdout, stderr=stderr)
-        retcode = subpopen.wait()
-        out_str = subpopen.stdout.read()
-        err_str = subpopen.stderr.read()
+    # Handle errors
+    if result.returncode != 0 and fatal_msg:
+        fatal_error_msg(fatal_msg, result.stderr)
 
-        if retcode != 0:
-            # xxx need to return proper exception classes
-            # rather than just strings
-            raise Exception("Non-zero retcode: %i" % retcode)
+    extra = {
+        "stderr": result.stderr,
+        "duration": duration,
+        "cmd_str": cmd_str,
+        "cwd": str(Path.cwd()),
+        "input_args": input_args,
+        "subprocess_result": result,
+    }
 
-        if len(err_str) > 0:
-            print(out_str)
-            print(err_str)
-            raise Exception("Non-empty error string")
-
-    else:
-        # wrap any exception, and let the user know with the retcode = -1
-        try:
-            subpopen = subprocess.Popen(cmd, shell=True, stdout=stdout, stderr=stderr)
-            retcode = subpopen.wait()
-            out_str = subpopen.stdout.read()
-            err_str = subpopen.stderr.read()
-        except:
-            out_str = ""
-            err_str = ""
-            subpopen = ""
-            retcode = -1
-
-    if verbose & len(out_str) > 0:
-        print(out_str)
-    if verbose & len(err_str) > 0:
-        print(err_str)
-
-    return retcode, out_str, err_str, subpopen
+    return result.returncode, result.stdout.strip(), extra

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Sequence
 
-from .cmd import subproc
+from .cmd import run_cmd
 from .strings import is_string, PathOrStr
 
 
@@ -120,32 +120,21 @@ def fulltext(
             pattern_str,
         )
 
-    # by default, this will raise an exception if there's
-    # any kind of problem
-    #
-    # don't print out the command
-    #
-    # don't throw an exception, because it looks as though
-    # agrep returns RETCODE==1 if it doesn't find any
-    # matches
-    verbose = False
-    retcode, out_str, err_str, subpopen = subproc(
-        cmd, verbose=verbose, throw_exception=False
+    # Run command with minimal output unless there's an error
+    retcode, out_str, _ = run_cmd(
+        cmd,
+        verbose=0,
+        check=False,  # Don't raise exception if no matches found (agrep returns 1)
     )
 
     if len(out_str) > 0:
         # strip away the path to yield just the filename for
         # each of the files in out_str
         found_files = [os.path.basename(x) for x in out_str.strip().split("\n")]
-
     else:
         # if you run the above on an empty string, you get
         # [''], whereas we really want to return an empty
         # list if we didn't find anything
         found_files = []
-
-    # print retcode
-    # print out_str
-    # print err_str
 
     return found_files
