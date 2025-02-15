@@ -200,11 +200,18 @@ def append_fullstop(s: str):
 
 
 def str_from_num(x):
+    try:
+        import numpy as np
+
+        bools = (bool, np.bool_)
+    except ImportError:
+        bools = (bool,)
+
     # todo, find a better way of doing this, e.g.
     # if isinstance(Iterable), recur. otherwise try str(x)
     if x is None:
         return str(x)
-    elif isinstance(x, (bool, np.bool_)):
+    elif isinstance(x, bools):
         return str(x)
     elif isinstance(x, str):
         return x
