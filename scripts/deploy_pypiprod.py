@@ -2,6 +2,7 @@
 
 from rich.console import Console
 from pathlib import Path
+from packaging.version import Version
 
 from gjdutils import __version__
 from gjdutils.decorators import console_print_doc
@@ -20,7 +21,7 @@ def main():
     console.rule("[yellow]Starting Production PyPI Deployment")
 
     # Check if version already exists
-    if check_version_exists(__version__, pypi_env="prod"):
+    if check_version_exists(Version(__version__), pypi_env="prod"):
         fatal_error_msg(
             f"Version {__version__} already exists on PyPI.\nPlease update __VERSION__.py to a new version number first."
         )
@@ -38,9 +39,8 @@ def main():
     build_package()
     upload_to_pypi(pypi_env="prod")
 
-    console.print(
-        "\n[green]Deployment to Production PyPI completed! run ./scripts/check_pypiprod.py[/green]"
-    )
+    console.print("\n[green]Deployment to Production PyPI completed![/green]")
+    console.print("Run ./scripts/check_pypiprod.py to verify the deployment")
 
 
 if __name__ == "__main__":

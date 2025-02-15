@@ -7,6 +7,7 @@ import shutil
 from typing import Literal
 from rich.console import Console
 from rich.progress import track
+from packaging.version import Version
 
 from gjdutils.cmd import run_cmd
 from gjdutils import __version__
@@ -54,11 +55,11 @@ def check_install_optional_features(python_path: Path, *, from_test_pypi: bool =
         console.print(f"[green]Successfully installed {feature} feature[/green]")
 
 
-def check_version_exists(version: str, pypi_env: PyPIEnv) -> bool:
+def check_version_exists(version: Version, pypi_env: PyPIEnv) -> bool:
     """Check if version already exists on specified PyPI environment.
 
     Args:
-        version: Version string to check
+        version: Version string to check (must be valid semantic version)
         pypi_env: PyPI environment to check ("test" or "prod")
     """
     base_url = {
@@ -66,7 +67,7 @@ def check_version_exists(version: str, pypi_env: PyPIEnv) -> bool:
         "prod": "https://pypi.org",
     }[pypi_env]
     try:
-        url = f"{base_url}/pypi/gjdutils/{version}/json"
+        url = f"{base_url}/pypi/gjdutils/{str(version)}/json"
         urllib.request.urlopen(url)
         return True
     except urllib.error.HTTPError as e:
