@@ -99,5 +99,74 @@ Currently managed in pyproject.toml with optional features:
 - PyPI account with 2FA configured
 - .pypirc file configured with test and prod PyPI credentials
 
+## Progress Tracking
+
+### ✓ Completed Steps
+- ✓ Created backup branch
+- ✓ Renamed GitHub repository
+- ✓ Updated local git remote
+- ✓ Updated version to 0.2.0 in __VERSION__.py
+- ✓ Updated pyproject.toml with new name and URLs
+- ✓ Renamed source directory from src/gdutils to src/gjdutils
+- ✓ Updated imports in Python files to use gjdutils
+- ✓ Updated test file to use gjdutils
+
+### Current State
+- On branch `rename-to-gjdutils`
+- Files moved and imports updated
+- Changes not yet committed
+
+### Next Steps
+1. Review any remaining files for gdutils references:
+   - Documentation files
+   - Any additional .md files
+   - Any string literals or comments in code
+
+2. Stage and commit changes:
+   ```bash
+   git add src/gjdutils/
+   git add __VERSION__.py pyproject.toml
+   git add tests/
+   git add .
+   git commit -m "Rename package from gdutils to gjdutils"
+   ```
+
+3. Test the package:
+   - Run test suite
+   - Test local installation: `pip install -e .`
+   - Verify imports work
+
+4. Build and deploy:
+   - Build package: `python -m build`
+   - Test on test.pypi.org
+   - Deploy to production PyPI
+
+### Files Needing Updates
+- [x] pyproject.toml
+- [x] __VERSION__.py
+- [x] tests/test_gdutils.py (imports updated)
+- [x] All Python files in src/gjdutils/ (imports updated)
+- [ ] Any additional documentation files
+
+## File Changes Tracking
+
+### ✓ Configuration Files (Done)
+- ✓ pyproject.toml
+- ✓ __VERSION__.py
+- ✓ README.md
+- ✓ .gitignore (no changes needed)
+
+### Python Files (To Do)
+Files needing import updates:
+```
+# Will list files here after grep
+```
+
+Changes needed:
+- `from gdutils import ...` → `from gjdutils import ...`
+- `import gdutils` → `import gjdutils`
+- Any string literals containing 'gdutils'
+- Any references in docstrings or comments
+
 
 
