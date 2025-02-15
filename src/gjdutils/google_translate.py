@@ -1,4 +1,3 @@
-from cachetools import cached, LRUCache, TTLCache
 from google.cloud import translate_v2 as translate
 import html
 from typing import Optional
@@ -14,6 +13,14 @@ def translate_text(
 
     Target must be an ISO 639-1 language code.
     See https://g.co/cloud/translate/v2/translate-reference#supported_languages
+
+    e.g.
+        translated_text, result = translate_text(
+            text="Hello, world",
+            lang_src_code="en",
+            lang_tgt_code="el",
+            verbose=0,
+        )
     """
     translate_client = translate.Client()
 
@@ -56,16 +63,6 @@ def translate_text(
     return translated_text, result
 
 
-# translated_text, result = translate_text(
-#     text="Hello, world",
-#     lang_src_code="en",
-#     lang_tgt_code="el",
-#     verbose=0,
-# )
-# translated_text
-
-
-@cached(cache={})
 def detect_language(text: str, verbose: int = 0) -> tuple[str, dict]:
     """
     Detects the text's language.
