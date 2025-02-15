@@ -11,11 +11,11 @@ def gen_uuid(n: int = 8):
     return str(uuid.uuid4()).replace("-", "")[:n]
 
 
-def gen_readable_uuid(n: int = 7, valid: Optional[list | str] = None):
-    # build az N digit random string with letters or numbers
+def gen_readable_rand_id(n: int = 7, valid: Optional[list | str] = None):
+    # build an N-digit random string with letters or numbers
     # excluding o,0,i,1,l,q (too similar to g) for easy reading
     #
-    # so this isn't officially a UUID
+    # this isn't officially a UUID
     if valid is None:
         valid = READABLE_RAND_CHARS
     return "".join([random.choice(valid) for _ in range(n)])

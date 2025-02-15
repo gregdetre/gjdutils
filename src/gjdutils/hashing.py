@@ -16,8 +16,8 @@ def hash_readable(s, n=10):
     """
     if isinstance(s, str):
         s = bytes(s, "utf-8")
-    hasher = hashlib.sha1(s)
-    b32 = base64.b32encode(hasher.digest())[:n]
+    hashed = hashlib.sha1(s).digest()
+    b32 = base64.b32encode(hashed)[:n]
     return b32.decode("utf-8").lower()
 
 
