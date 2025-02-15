@@ -4,6 +4,15 @@ T = TypeVar("T")
 
 
 def found_one(lst: Sequence[T]) -> T | Literal[False]:
+    """
+    e.g.
+    >>> found_one([])
+    False
+    >>> found_one([10])
+    10
+    >>> found_one([10, 20])
+    False
+    """
     if len(lst) == 0:
         return False
     elif len(lst) == 1:
@@ -15,7 +24,7 @@ def found_one(lst: Sequence[T]) -> T | Literal[False]:
 
 
 def find_duplicates(lst: Sequence[T]) -> list[T]:
-    return [item for item in lst if lst.count(item) > 1]
+    return [item for item in set(lst) if lst.count(item) > 1]
 
 
 # def uniquify(items: Sequence[T], key: Callable[[T], Any] | None = None) -> list[T]:
