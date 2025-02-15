@@ -47,6 +47,7 @@ dev = [
     "twine",
     "wheel",
     "rich",  # for console output formatting
+    "typer",  # for CLI tools
 ]
 dt = [
     "humanize",

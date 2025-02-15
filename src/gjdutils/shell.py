@@ -69,3 +69,26 @@ def run_cmd(
         cmd[0] = str(python_path)
     result = subprocess.run(cmd, check=check, capture_output=True, text=True)
     return result
+
+
+def fatal_error_msg(msg: str, stderr: Optional[str] = None) -> None:
+    """Print a fatal error message and exit with code 1.
+
+    Args:
+        msg: The error message to display
+        stderr: Optional stderr output to display after the message
+
+    Example:
+        ```python
+        if result.returncode != 0:
+            fatal_error_msg("Failed to build package", result.stderr)
+        ```
+    """
+    from rich.console import Console
+
+    console = Console()
+
+    console.print(f"[red]{msg}[/red]")
+    if stderr:
+        console.print(stderr)
+    sys.exit(1)

@@ -4,13 +4,16 @@
 
 - Keep things simple and readable
 - Prefer Python scripts over shell scripts
-- Keep scripts minimal and focused on a single task
-- Fail explicitly and loudly, e.g. use `set -e` in bash scripts to exit on error
+- Keep scripts minimal, concise, and focused on a single task
+- Break long main functions into sub-functions to make it easy to follow the logic
+- Prefer to show the full tracebacks & error messages, to give the user full information. Minimise try/except. 
+- Fail explicitly and loudly, e.g. , and use `set -e` in bash scripts to exit on error
 
 ## Coding details
+- Scripts live in `scripts/`
 - Make scripts executable with `chmod +x`
 - Use `#!/bin/bash` or `#!/usr/bin/env python3` shebang lines
-- Use python Typer if command-line arguments are needed
+- Use python `Typer` if command-line arguments are needed
 - If there is overlapping functionality, maybe move it into `src/shell.py` or somewhere else reusable
 - Use colors for better readability (green for success, yellow for warnings, red for errors)
 - Show progress for long-running operations
