@@ -2,6 +2,9 @@ from functools import update_wrapper
 import inspect
 import re
 
+from gjdutils.sorteddict import SortedDict
+from gjdutils.typ import isiterable
+
 
 # from abracadjabra.utils
 def generate_mckey(prefix, d):
@@ -42,13 +45,13 @@ def generate_mckey(prefix, d):
         Returns a SortedDict, with the keys sorted alphabetically.
 
         This might not be necessary, since I think the order
-        of a python dict's keys() is deterministic, but by
+        of a Python 3 dict's keys() is deterministic, but by
         sorting by dictionary keys, it's easier to know in
         advance what the generated MCKEY should look like.
         The idea is to ensure that no matter how D was
         created, you'll know what the key should be.
         """
-        sorted_d = SortedDict()
+        sorted_d = SortedDict(lambda x: x)
         for k in sorted(d.keys()):
             sorted_d[k] = d[k]
         return sorted_d
