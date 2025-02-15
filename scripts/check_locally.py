@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from rich.console import Console
-from rich.progress import track
 from pathlib import Path
 import shutil
-import sys
 
-from gjdutils.shell import temp_venv, run_cmd, fatal_error_msg
 from gjdutils.decorators import console_print_doc
+from gjdutils.shell import temp_venv
+from gjdutils.cmd import run_cmd
+from gjdutils.pypi_build import verify_installation, check_install_optional_features
 
 console = Console()
 
@@ -20,68 +20,37 @@ def clean_build_dirs():
     shutil.rmtree("build", ignore_errors=True)
 
 
-@console_print_doc(color="yellow")
 def build_package():
-    """Building package... python -m build"""
-    result = run_cmd([str(sys.executable), "-m", "build"], check=False)
-    if result.returncode != 0:
-        fatal_error_msg("Failed to build package", result.stderr)
+    return run_cmd(
+        f"python -m build",
+        before_msg="Building package...",
+        fatal_msg="Failed to build package",
+    )
 
 
-@console_print_doc(color="yellow")
 def install_and_test_package(python_path: Path, wheel_file: Path):
     """Installing and testing package..."""
     # Command: pip install dist/*.whl
-    console.print("\nInstalling package from local build...", style="green")
-    result = run_cmd(
-        [str(python_path), "-m", "pip", "install", str(wheel_file)], check=False
+    run_cmd(
+        f"{python_path} -m pip install {wheel_file}",
+        before_msg="Installing package wheel file from local build...",
+        fatal_msg="Failed to install package",
     )
-    if result.returncode != 0:
-        fatal_error_msg("Failed to install package", result.stderr)
 
     # Command: pip install ".[dev]"
-    console.print("\nInstalling dev dependencies...", style="green")
-    result = run_cmd([str(python_path), "-m", "pip", "install", ".[dev]"], check=False)
-    if result.returncode != 0:
-        fatal_error_msg("Failed to install dev dependencies", result.stderr)
-
-
-@console_print_doc(color="yellow")
-def verify_installation(python_path: Path):
-    """Verifying package installation..."""
-    # Command: python -c "import gjdutils; print(gjdutils.__version__)"
-    # we need to actually use `python -c` to check the version in the temporary venv
-    result = run_cmd(
-        [str(python_path), "-c", "import gjdutils; print(gjdutils.__version__)"],
-        check=False,
+    run_cmd(
+        f"{python_path} -m pip install '.[dev]'",
+        before_msg="Installing dev dependencies...",
+        fatal_msg="Failed to install dev dependencies",
     )
-    if result.returncode != 0:
-        fatal_error_msg("Failed to import gjdutils", result.stderr)
-    version = result.stdout.strip()
-    console.print(f"gjdutils version: {version}")
 
 
-@console_print_doc(color="yellow")
 def run_test_suite(python_path: Path):
-    """Running test suite..."""
-    # Command: python -m pytest
-    result = run_cmd([str(python_path), "-m", "pytest"], check=False)
-    if result.returncode != 0:
-        fatal_error_msg("Test suite failed", result.stdout + "\n" + result.stderr)
-
-
-@console_print_doc(color="yellow")
-def test_optional_features(python_path: Path):
-    """Testing optional feature installations..."""
-    features = ["dt", "llm", "audio_lang", "html_web"]
-    for feature in track(features, description="Installing features"):
-        console.print(f"\nTesting feature set: {feature}", style="yellow")
-        result = run_cmd(
-            [str(python_path), "-m", "pip", "install", f".[{feature}]"], check=False
-        )
-        if result.returncode != 0:
-            fatal_error_msg(f"Failed to install {feature} feature", result.stderr)
-        console.print(f"[green]Successfully installed {feature} feature[/green]")
+    return run_cmd(
+        f"{python_path} -m pytest",
+        before_msg="Running test suite...",
+        fatal_msg="Test suite failed",
+    )
 
 
 def main():
@@ -96,7 +65,7 @@ def main():
         install_and_test_package(python_path, wheel_file)
         verify_installation(python_path)
         run_test_suite(python_path)
-        test_optional_features(python_path)
+        check_install_optional_features(python_path)
 
     console.print("\nLocal testing completed successfully!", style="green")
 
