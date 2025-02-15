@@ -1,5 +1,4 @@
-from collections import OrderedDict
-from typing import Any, Callable, Literal, Sequence, TypeVar
+from typing import Literal, Sequence, TypeVar
 
 T = TypeVar("T")
 
@@ -17,8 +16,6 @@ def found_one(lst: Sequence[T]) -> T | Literal[False]:
 
 def find_duplicates(lst: Sequence[T]) -> list[T]:
     return [item for item in lst if lst.count(item) > 1]
-
-    from collections import OrderedDict
 
 
 # def uniquify(items: Sequence[T], key: Callable[[T], Any] | None = None) -> list[T]:
