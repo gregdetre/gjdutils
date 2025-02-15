@@ -61,7 +61,15 @@ def check_version_exists(version: Version, pypi_env: PyPIEnv) -> bool:
     Args:
         version: Version string to check (must be valid semantic version)
         pypi_env: PyPI environment to check ("test" or "prod")
+
+    Raises:
+        TypeError: If version is not a packaging.version.Version instance
     """
+    if not isinstance(version, Version):
+        raise TypeError(
+            f"version must be a packaging.version.Version instance, got {type(version)}"
+        )
+
     base_url = {
         "test": "https://test.pypi.org",
         "prod": "https://pypi.org",
