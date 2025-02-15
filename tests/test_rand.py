@@ -1,5 +1,5 @@
 from pytest import raises
-from .rand import assert_valid_readable_rand_id
+from gjdutils.rand import assert_valid_readable_rand_id
 
 
 def test_check_valid_readable_rand_id():

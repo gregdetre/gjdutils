@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional
 
-from .indexing import (
+from gjdutils.indexing import (
     loc_between,
     loc_for_insert_at,
     loc_for_insert_at2,
