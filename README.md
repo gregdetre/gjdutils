@@ -22,12 +22,19 @@ pip install "gjdutils[all_no_dev]"
 
 ### Development Setup
 
-If you're developing `gjdutils` itself:
+If you're developing `gjdutils` itself, install in editable mode:
 ```bash
-# From the gjdutils root directory
-pip install -e ".[dev]"     # Install in editable mode with development dependencies
-pip install -e ".[all_no_dev]"     # Install all optional dependencies (except dev)
+# (Assumes you have already setup your virtualenv)
+# from the gjdutils root directory
+pip install -e ".[all_no_dev, dev]"     # Install all optional dependencies
 ```
+
+Or if you're feeling lazy and can't remember that command, just use:
+
+```bash
+python scripts/install_all_dev_dependencies.py
+```
+
 
 ### Adding to requirements.txt
 
