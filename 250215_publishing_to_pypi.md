@@ -109,44 +109,50 @@ Currently managed in pyproject.toml with optional features:
 - ✓ Updated pyproject.toml with new name and URLs
 - ✓ Renamed source directory from src/gdutils to src/gjdutils
 - ✓ Updated imports in Python files to use gjdutils
-- ✓ Updated test file to use gjdutils
+- ✓ Updated test files to use gjdutils
+- ✓ Fixed package __init__.py to expose version
+- ✓ Verified all tests are passing
+- ✓ Committed all changes to rename-to-gjdutils branch
 
 ### Current State
 - On branch `rename-to-gjdutils`
-- Files moved and imports updated
-- Changes not yet committed
+- All files moved and imports updated
+- All changes committed
+- Tests passing
 
 ### Next Steps
-1. Review any remaining files for gdutils references:
-   - Documentation files
-   - Any additional .md files
-   - Any string literals or comments in code
+1. Final documentation review:
+   - Review README.md for any remaining gdutils references
+   - Check any other documentation files in the repository
 
-2. Stage and commit changes:
+2. Build and test package:
    ```bash
-   git add src/gjdutils/
-   git add __VERSION__.py pyproject.toml
-   git add tests/
-   git add .
-   git commit -m "Rename package from gdutils to gjdutils"
+   # Build the package
+   python -m build
+   
+   # Upload to test.pypi.org
+   twine upload -r testpypi dist/*
+   
+   # Test installation from test.pypi.org
+   pip install -i https://test.pypi.org/simple/ gjdutils
    ```
 
-3. Test the package:
-   - Run test suite
-   - Test local installation: `pip install -e .`
-   - Verify imports work
+3. If test deployment successful:
+   - Upload to production PyPI: `twine upload dist/*`
+   - Test installation: `pip install gjdutils`
+   - Test basic functionality
 
-4. Build and deploy:
-   - Build package: `python -m build`
-   - Test on test.pypi.org
-   - Deploy to production PyPI
+4. Post-deployment:
+   - Merge rename-to-gjdutils branch to main
+   - Tag release v0.2.0
+   - Update GitHub release notes
 
 ### Files Needing Updates
 - [x] pyproject.toml
 - [x] __VERSION__.py
 - [x] tests/test_gdutils.py (imports updated)
 - [x] All Python files in src/gjdutils/ (imports updated)
-- [ ] Any additional documentation files
+- [ ] README.md (needs final review)
 
 ## File Changes Tracking
 
