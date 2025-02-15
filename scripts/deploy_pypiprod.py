@@ -15,6 +15,8 @@ from gjdutils.pypi_build import (
 from gjdutils.shell import fatal_error_msg
 from gjdutils.cmd import run_cmd
 from scripts.check_git_clean import check_git_status
+from scripts.check_pypiprod import main as check_pypiprod_main
+
 
 console = Console()
 
@@ -45,7 +47,8 @@ def main():
     upload_to_pypi(pypi_env="prod")
 
     console.print("\n[green]Deployment to Production PyPI completed![/green]")
-    console.print("Run ./scripts/check_pypiprod.py to verify the deployment")
+
+    check_pypiprod_main()
 
 
 if __name__ == "__main__":

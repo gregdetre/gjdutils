@@ -12,6 +12,7 @@ from gjdutils.pypi_build import (
     build_package,
     upload_to_pypi,
 )
+from scripts.check_pypitest import main as check_pypitest_main
 from gjdutils.shell import fatal_error_msg
 
 console = Console()
@@ -32,7 +33,8 @@ def main():
     upload_to_pypi(pypi_env="test")
 
     console.print("\n[green]Deployment to Test PyPI completed![/green]")
-    console.print("Run ./scripts/check_pypitest.py to verify the deployment")
+
+    check_pypitest_main()
 
 
 if __name__ == "__main__":
