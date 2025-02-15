@@ -27,6 +27,7 @@ dependencies = [
     "pydantic",
 ]
 
+# if you add a new optional dependency group, remember to add it to the 'all' group below
 [project.optional-dependencies]
 audio_lang = [
     "azure-cognitiveservices-speech",
@@ -63,6 +64,13 @@ llm = [
     # "llm", no longer using this
     "openai",
     "pillow", # for images
+]
+
+all_no_dev = [
+    "gjdutils[audio_lang]",
+    "gjdutils[dt]",
+    "gjdutils[html_web]",
+    "gjdutils[llm]",
 ]
 
 [project.urls]
