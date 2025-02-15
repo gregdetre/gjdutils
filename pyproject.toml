@@ -1,6 +1,6 @@
 [project]
 # case-insensitive
-name = "GDutils"
+name = "GJDutils"
 # https://hatch.pypa.io/latest/config/metadata/
 dynamic = ["version"]
 authors = [
@@ -8,7 +8,7 @@ authors = [
 ]
 description = "A collection of useful utility functions (basics, data science/AI, web development, etc)"
 readme = "README.md"
-# because I use the | syntax for type Union
+# because I use the | syntax for type Union
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -53,17 +53,17 @@ html_web = [
 ]
 llm = [
     "cachetools",
-    # "llm", no longer using this
+    # "llm", no longer using this
     "openai",
-    "pillow", # for images
+    "pillow", # for images
 ]
 
 [project.urls]
-Homepage = "https://github.com/gregdetre/gdutils"
-Repository = "https://github.com/gregdetre/gdutils"
-# Issues = "https://github.com/gregdetre/gdutils/issues"
-# Documentation
-# Changelog
+Homepage = "https://github.com/gregdetre/gjdutils"
+Repository = "https://github.com/gregdetre/gjdutils"
+# Issues = "https://github.com/gregdetre/gjdutils/issues"
+# Documentation
+# Changelog
 
 [build-system]
 requires = ["hatchling"]
@@ -72,8 +72,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.sdist]
 exclude = [
     "dist/",
-    "gdutils/obsolete/",
-    "gdutils/todo/",
+    "gjdutils/obsolete/",
+    "gjdutils/todo/",
     "tests/fixme_*.py",
 ]
 
