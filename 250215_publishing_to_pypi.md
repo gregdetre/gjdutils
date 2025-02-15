@@ -16,7 +16,7 @@
 1. Build and test package locally:
    ```bash
    # Option 1: Automated testing script (recommended)
-   ./scripts/test_locally.sh
+   ./scripts/check_locally.sh
    
    # Option 2: Manual steps
    # Clean any existing builds
@@ -28,6 +28,10 @@
 
 2. Test PyPI Deployment:
    ```bash
+   # Option 1: Automated testing script (recommended)
+   ./scripts/check_test_pypi.sh
+   
+   # Option 2: Manual steps
    # Upload to test.pypi.org
    twine upload -r testpypi dist/*
    
@@ -35,8 +39,8 @@
    python -m venv /tmp/test-gjdutils
    source /tmp/test-gjdutils/bin/activate
    
-   # Test installation from test.pypi.org
-   pip install -i https://test.pypi.org/simple/ gjdutils
+   # Test installation from test.pypi.org (with dependencies from PyPI)
+   pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gjdutils
    
    # Test basic functionality
    python -c "import gjdutils; print(gjdutils.__version__)"
