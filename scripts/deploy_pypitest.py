@@ -9,7 +9,7 @@ from gjdutils.pypi_build import (
     check_version_exists,
     clean_build_dirs,
     build_package,
-    upload_to_test_pypi,
+    upload_to_pypi,
 )
 from gjdutils.shell import fatal_error_msg
 
@@ -20,7 +20,7 @@ def main():
     console.rule("[yellow]Starting Test PyPI Deployment")
 
     # Check if version already exists
-    if check_version_exists(__version__):
+    if check_version_exists(__version__, pypi_env="test"):
         fatal_error_msg(
             f"Version {__version__} already exists on Test PyPI.\nPlease update __VERSION__.py to a new version number first."
         )
@@ -28,10 +28,10 @@ def main():
     # Execute deployment steps
     clean_build_dirs()
     build_package()
-    upload_to_test_pypi()
+    upload_to_pypi(pypi_env="test")
 
     console.print("\n[green]Deployment to Test PyPI completed![/green]")
-    console.print("Run ./scripts/check_pypi_test.py to verify the deployment")
+    console.print("Run ./scripts/check_pypitest.py to verify the deployment")
 
 
 if __name__ == "__main__":

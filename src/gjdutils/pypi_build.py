@@ -4,6 +4,7 @@ from pathlib import Path
 import urllib.request
 import urllib.error
 import shutil
+from typing import Literal
 from rich.console import Console
 from rich.progress import track
 
@@ -11,6 +12,9 @@ from gjdutils.cmd import run_cmd
 from gjdutils import __version__
 
 console = Console()
+
+# Type for PyPI environment
+PyPIEnv = Literal["test", "prod"]
 
 
 def verify_installation(python_path: Path):
@@ -50,10 +54,19 @@ def check_install_optional_features(python_path: Path, *, from_test_pypi: bool =
         console.print(f"[green]Successfully installed {feature} feature[/green]")
 
 
-def check_version_exists(version: str) -> bool:
-    """Check if version already exists on Test PyPI."""
+def check_version_exists(version: str, pypi_env: PyPIEnv) -> bool:
+    """Check if version already exists on specified PyPI environment.
+
+    Args:
+        version: Version string to check
+        pypi_env: PyPI environment to check ("test" or "prod")
+    """
+    base_url = {
+        "test": "https://test.pypi.org",
+        "prod": "https://pypi.org",
+    }[pypi_env]
     try:
-        url = f"https://test.pypi.org/pypi/gjdutils/{version}/json"
+        url = f"{base_url}/pypi/gjdutils/{version}/json"
         urllib.request.urlopen(url)
         return True
     except urllib.error.HTTPError as e:
@@ -78,11 +91,21 @@ def build_package():
     )
 
 
-def upload_to_test_pypi():
-    """Upload package to Test PyPI."""
-    # Command: twine upload -r testpypi dist/*
+def upload_to_pypi(pypi_env: PyPIEnv):
+    """Upload package to specified PyPI environment.
+
+    Args:
+        pypi_env: PyPI environment to upload to ("test" or "prod")
+    """
+    if pypi_env == "test":
+        cmd = "twine upload -r testpypi dist/*"
+    elif pypi_env == "prod":
+        cmd = "twine upload dist/*"
+    else:
+        raise ValueError(f"Invalid PyPI environment: {pypi_env}")
+
     return run_cmd(
-        "twine upload -r testpypi dist/*",
-        before_msg="Uploading package to Test PyPI...",
-        fatal_msg="Failed to upload to Test PyPI",
+        cmd,
+        before_msg=f"Uploading package to {pypi_env} PyPI...",
+        fatal_msg=f"Failed to upload to {pypi_env} PyPI",
     )
