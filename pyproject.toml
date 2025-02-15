@@ -46,6 +46,7 @@ dev = [
     "build",
     "twine",
     "wheel",
+    "rich",  # for console output formatting
 ]
 dt = [
     "humanize",
