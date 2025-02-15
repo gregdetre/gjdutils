@@ -4,7 +4,8 @@ from anthropic import Anthropic, NOT_GIVEN
 import os
 from typing import Optional
 
-from gdutils.rand import DEFAULT_RANDOM_SEED
+from gjdutils.rand import DEFAULT_RANDOM_SEED
+from gjdutils.llm_utils import image_to_base64_basic
 
 CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
 # https://docs.anthropic.com/en/docs/about-claude/models
@@ -14,8 +15,6 @@ MODEL_NAME_CLAUDE_SONNET_CHEAP_LATEST = "claude-3-5-haiku-latest"
 
 
 def img_as_content_dict(img_filen: str):
-    from gdutils.llm_utils import image_to_base64_basic
-
     media_type_from_extension = {
         ".jpg": "image/jpeg",
         ".jpeg": "image/jpeg",

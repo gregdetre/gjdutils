@@ -1,4 +1,4 @@
-# each of these is a Jinja template. see gdutils.strings.jinja_render()
+# each of these is a Jinja template. see gjdutils.strings.jinja_render()
 
 summarise_text = """
 Summarise the following. Be as concise, concrete, and easy to understand as you can. Provide only the summary itself, without any superfluous conversation, commentary, markup, etc. {{ granularity }}

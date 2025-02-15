@@ -1,9 +1,7 @@
 import json
 from typing import Iterable, Optional
 
-from gdutils.strings import jinja_render
-
-from .strings import is_string
+from gjdutils.strings import is_string, jinja_render
 
 
 def compare_dict(d1, d2, ignore_underscores=True):

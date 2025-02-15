@@ -2,7 +2,7 @@ from pathlib import Path
 from urllib import parse as urlparse
 import webbrowser
 
-from gdutils.strings import PathOrStr
+from gjdutils.strings import PathOrStr
 
 
 def webbrowser_open(filen: PathOrStr, browser=None):

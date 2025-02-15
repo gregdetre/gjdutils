@@ -7,6 +7,7 @@ from typing import Any, Literal, Optional
 from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from .rand import DEFAULT_RANDOM_SEED
 from .strings import jinja_render
+from gjdutils.llm_utils import contents_for_images
 
 
 # openai.api_key = OPENAI_API_KEY
@@ -121,7 +122,6 @@ def call_openai_gpt(
         }
     ]
     """
-    from gdutils.llm_utils import contents_for_images
 
     extra = locals()
     extra.pop("client")  # to avoid caching issues, and because it includes the API key
@@ -166,7 +166,7 @@ def call_openai_gpt(
         tool_choice=tool_choice,  # type: ignore
         temperature=temperature,
         max_tokens=max_tokens if max_tokens is not None else NOT_GIVEN,
-        # stop=stop,  # for some reason, setting this to None causes an error
+        # stop=stop,  # for some reason, setting this to None causes an error
         seed=seed,
         response_format=response_format,  # type: ignore
     )

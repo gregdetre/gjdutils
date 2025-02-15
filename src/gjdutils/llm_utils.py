@@ -6,9 +6,9 @@ from typing import Any, Literal, Optional
 from anthropic import Anthropic
 from openai import OpenAI
 
-from gdutils.llms_claude import call_claude_gpt
-from gdutils.llms_openai import call_openai_gpt
-from gdutils.strings import jinja_render
+from gjdutils.llms_claude import call_claude_gpt
+from gjdutils.llms_openai import call_openai_gpt
+from gjdutils.strings import jinja_render
 
 
 MODEL_TYPE = Literal["openai", "claude"]

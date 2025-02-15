@@ -5,16 +5,19 @@ import os
 from pprint import pprint
 from typing import Any, Optional
 
-from gdutils.llm_utils import proc_llm_out_json
-from gdutils.llms_openai import (
+from gjdutils.llm_utils import proc_llm_out_json
+from gjdutils.llms_openai import (
     DEFAULT_MODEL_NAME,
     MODEL_NAME_GPT4_TURBO,
     OPENAI_API_KEY,
     GranularityTyps,
+    call_openai_gpt,
+    call_openai_gpt_with_retry,
+    call_openai_gpt_with_retry_and_backoff,
 )
-from gdutils.prompt_templates import summarise_list_of_texts_as_one, summarise_text
-from gdutils.rand import DEFAULT_RANDOM_SEED
-from gdutils.strings import jinja_render
+from gjdutils.prompt_templates import summarise_list_of_texts_as_one, summarise_text
+from gjdutils.rand import DEFAULT_RANDOM_SEED
+from gjdutils.strings import jinja_render
 
 
 DEFAULT_MODEL = llm.get_model(DEFAULT_MODEL_NAME)
