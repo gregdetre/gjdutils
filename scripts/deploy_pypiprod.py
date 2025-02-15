@@ -13,12 +13,17 @@ from gjdutils.pypi_build import (
     upload_to_pypi,
 )
 from gjdutils.shell import fatal_error_msg
+from gjdutils.cmd import run_cmd
+from scripts.check_git_clean import check_git_status
 
 console = Console()
 
 
 def main():
     console.rule("[yellow]Starting Production PyPI Deployment")
+
+    # Check git status first
+    check_git_status()
 
     # Check if version already exists
     if check_version_exists(Version(__version__), pypi_env="prod"):
