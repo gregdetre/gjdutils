@@ -43,6 +43,9 @@ audio_lang = [
 dev = [
     "black",
     "pytest",
+    "build",
+    "twine",
+    "wheel",
 ]
 dt = [
     "humanize",

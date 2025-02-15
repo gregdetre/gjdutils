@@ -15,6 +15,10 @@
 
 1. Build and test package locally:
    ```bash
+   # Option 1: Automated testing script (recommended)
+   ./scripts/test_locally.sh
+   
+   # Option 2: Manual steps
    # Clean any existing builds
    rm -rf dist/ build/
    
