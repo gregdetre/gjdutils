@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Any, TypeVar, cast
 from pydantic import StrictStr, TypeAdapter
 
+from gjdutils.vprint import vprint
+
 T = TypeVar("T")
 _processed_vars = set()
 
@@ -27,10 +29,8 @@ def get_env_var(name: str, typ: Any = StrictStr, verbose: int = 0) -> T:
     Raises:
         ValueError: If variable is missing or fails validation
     """
-    if verbose >= 1:
-        print(f"Attempting to get environment variable: {name}")
-    if verbose >= 2:
-        print(f"Current environment variables: {list(os.environ.keys())}")
+    vprint(1, f"Attempting to get environment variable: {name}")
+    vprint(2, f"Current environment variables: {list(os.environ.keys())}")
     try:
         value = os.environ[name]
         _processed_vars.add(name)
