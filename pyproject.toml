@@ -31,7 +31,6 @@ dependencies = [
 [project.optional-dependencies]
 audio_lang = [
     "azure-cognitiveservices-speech",
-    "cachetools",
     "google-cloud-texttospeech",
     "google-cloud-translate",
     "elevenlabs",
@@ -61,9 +60,10 @@ dt = [
 ]
 html_web = [
     "bs4",
+    "lxml",
 ]
 llm = [
-    "cachetools",
+    "anthropic",
     # "llm", no longer using this
     "openai",
     "pillow", # for images

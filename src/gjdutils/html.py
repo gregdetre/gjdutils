@@ -65,15 +65,15 @@ def prettify_html(
     if isinstance(html, list):
         # then we'll handle it as a string in a moment
         html = "".join(
-            [tostring(e, method="html").decode() for e in html]
+            [tostring(e, method="html").decode() for e in html]  # type: ignore
         )  #  type: ignore
     if isinstance(html, ElementType):
         # this will do some cleaning and fixing. but
         # you need document_fromstring() if you want to make sure
         # that it's a full html doc, e.g. with html, body
-        html = tostring(html, method="html").decode()
+        html = tostring(html, method="html").decode()  # type: ignore
 
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")  # type: ignore
     # html2 = tostring(html, pretty_print=True, method="html").decode()  # type: ignore
     # the lxml pretty_print just isn't as good as BS4, e.g. with a list of elements
     # it wraps things in a div fragment, but the pretty-print of that isn't right

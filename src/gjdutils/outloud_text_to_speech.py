@@ -33,11 +33,12 @@ def outloud(
             verbose=verbose,
         )
     elif prog == "elevenlabs":
+        assert speed is None, "speed not supported for elevenlabs"
         response = outloud_elevenlabs(
             text=text,
             mp3_filen=mp3_filen,
             bot_name=bot_name,
-            speed=speed,
+            # speed=speed,
             verbose=verbose,
         )
     else:
@@ -78,7 +79,7 @@ def outloud_azure(
 
     # The language of the voice that speaks.
     # speech_config.speech_synthesis_voice_name = "en-US-JennyNeural"
-    speech_config.speech_synthesis_voice_name = bot_name
+    speech_config.speech_synthesis_voice_name = bot_name  # type: ignore
 
     speech_synthesizer = speechsdk.SpeechSynthesizer(
         speech_config=speech_config, audio_config=audio_config
@@ -100,13 +101,13 @@ def outloud_azure(
     speech_synthesis_result = speech_synthesizer.speak_ssml_async(ssml).get()
 
     if (
-        speech_synthesis_result.reason
+        speech_synthesis_result.reason  # type: ignore
         == speechsdk.ResultReason.SynthesizingAudioCompleted
     ):
         if verbose > 0:
             print("Speech synthesized for text [{}]".format(text))
-    elif speech_synthesis_result.reason == speechsdk.ResultReason.Canceled:
-        cancellation_details = speech_synthesis_result.cancellation_details
+    elif speech_synthesis_result.reason == speechsdk.ResultReason.Canceled:  # type: ignore
+        cancellation_details = speech_synthesis_result.cancellation_details  # type: ignore
         print("Speech synthesis canceled: {}".format(cancellation_details.reason))
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             if cancellation_details.error_details:
