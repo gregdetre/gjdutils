@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, TypeVar, cast
 from pydantic import StrictStr, TypeAdapter
 
-from gjdutils.vprint import vprint
+from gjdutils.print_utils import vprint
 
 T = TypeVar("T")
 _processed_vars = set()

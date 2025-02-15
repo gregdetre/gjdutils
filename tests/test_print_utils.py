@@ -1,5 +1,5 @@
 import pytest
-from gjdutils.vprint import vprint
+from gjdutils.print_utils import vprint
 
 
 def test_vprint_basic():
