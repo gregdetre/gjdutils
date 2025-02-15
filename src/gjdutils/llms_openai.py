@@ -8,10 +8,10 @@ from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from .rand import DEFAULT_RANDOM_SEED
 from .strings import jinja_render
 from gjdutils.llm_utils import contents_for_images
+from gjdutils.env import get_env_var
 
 
-# openai.api_key = OPENAI_API_KEY
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = get_env_var("OPENAI_API_KEY")
 MODEL_NAME_GPT4 = "gpt-4"
 MODEL_NAME_GPT35 = "gpt-3.5-turbo"
 MODEL_NAME_GPT4_TURBO = "gpt-4-turbo"  # -1106-preview"

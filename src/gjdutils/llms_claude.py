@@ -6,8 +6,9 @@ from typing import Optional
 
 from gjdutils.rand import DEFAULT_RANDOM_SEED
 from gjdutils.llm_utils import image_to_base64_basic
+from gjdutils.env import get_env_var
 
-CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
+CLAUDE_API_KEY = get_env_var("CLAUDE_API_KEY")
 # https://docs.anthropic.com/en/docs/about-claude/models
 MODEL_NAME_CLAUDE_SONNET_GOOD_PINNED = "claude-3-5-sonnet-20240620"
 MODEL_NAME_CLAUDE_SONNET_GOOD_LATEST = "claude-3-5-sonnet-latest"

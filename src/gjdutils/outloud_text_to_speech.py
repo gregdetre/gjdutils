@@ -1,5 +1,6 @@
 import os
 from typing import Optional
+from gjdutils.env import get_env_var
 
 
 def outloud(
@@ -66,8 +67,8 @@ def outloud_azure(
 
     # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
     speech_config = speechsdk.SpeechConfig(
-        subscription=os.environ.get("SPEECH_KEY"),
-        region=os.environ.get("SPEECH_REGION"),
+        subscription=get_env_var("SPEECH_KEY"),
+        region=get_env_var("SPEECH_REGION"),
     )
     # https://learn.microsoft.com/en-us/answers/questions/693848/can-azure-text-to-speech-support-more-audio-files.html
     speech_config.set_speech_synthesis_output_format(
@@ -194,7 +195,7 @@ def outloud_elevenlabs(
     from elevenlabs.client import ElevenLabs
 
     if api_key is None:
-        api_key = os.environ.get("ELEVENLABS_API_KEY")
+        api_key = get_env_var("ELEVENLABS_API_KEY")
     # i should figure out a better way to handle playing an mp3 file
     # assert (
     #     not mp3_filen and should_play
