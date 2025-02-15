@@ -23,6 +23,8 @@ keywords = ["utilities", "strings", "dates", "data science", "web development", 
 dependencies = [
     "ipython",
     "jinja2",
+    "python-dotenv",
+    "pydantic",
 ]
 
 [project.optional-dependencies]
