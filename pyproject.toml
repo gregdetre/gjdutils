@@ -37,11 +37,14 @@ audio_lang = [
     "elevenlabs",
     # for playing mp3
     "playsound",
+    # for voice_speechrecognition Microphone
+    "pyaudio",
     # for playing mp3
     "pygame",
     # for playing mp3
     "python-vlc",
     "SpeechRecognition",
+    "openai-whisper",  # for OpenAI Whisper speech recognition
 ]
 dev = [
     "black",

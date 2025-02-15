@@ -6,10 +6,11 @@
 
 from typing import Optional
 import speech_recognition as sr
-from .env import get_env_var
+from gjdutils.env import get_env_var
 
 
 def recognise_speech(display: Optional[str], verbose: int = 0):
+    openai_api_key = get_env_var("OPENAI_API_KEY")
     if display:
         print(display, end="", flush=True)
     # obtain audio from the microphone
@@ -18,8 +19,7 @@ def recognise_speech(display: Optional[str], verbose: int = 0):
         # print("Say something!")
         audio = r.listen(source)
     print("... PROCESSING")
-    openai_api_key = get_env_var("OPENAI_API_KEY")
-    text = r.recognize_whisper_api(audio, api_key=openai_api_key)
+    text = r.recognize_whisper(audio, api_key=openai_api_key)
     if verbose > 0:
         print(text)
     return text

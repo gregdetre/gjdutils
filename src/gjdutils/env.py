@@ -7,7 +7,7 @@ T = TypeVar("T")
 _processed_vars = set()
 
 
-def get_env_var(name: str, typ: Any = StrictStr) -> T:
+def get_env_var(name: str, typ: Any = StrictStr, verbose: int = 0) -> T:
     """Get environment variable with type validation, e.g.
 
     OPENAI_API_KEY = get_env_var("OPENAI_API_KEY")
@@ -23,6 +23,10 @@ def get_env_var(name: str, typ: Any = StrictStr) -> T:
     Raises:
         ValueError: If variable is missing or fails validation
     """
+    if verbose >= 1:
+        print(f"Attempting to get environment variable: {name}")
+    if verbose >= 2:
+        print(f"Current environment variables: {list(os.environ.keys())}")
     try:
         value = os.environ[name]
         _processed_vars.add(name)
