@@ -28,6 +28,7 @@ def run_cmd(
             1 = show before_msg if provided
             2 = also show command being run (default)
             3 = also show working directory and duration
+            4 = also show command stdout output
         replace_sys_python_executable: Replace 'python ' with sys.executable
         dry_run: If True, only print what would be run
         **subprocess_kwargs: Additional arguments passed to subprocess.run
@@ -123,10 +124,18 @@ def run_cmd(
     if verbose >= 3:
         console.print(f"[blue]Working directory: {Path.cwd()}[/blue]")
         console.print(f"[blue]Duration: {duration:.2f}s[/blue]")
+    if verbose >= 4:
+        console.print(f"[blue]Command output:[/blue]\n{result.stdout}")
 
     # Handle errors
-    if result.returncode != 0 and fatal_msg:
-        fatal_error_msg(fatal_msg, result.stderr)
+    if result.returncode != 0:
+        # Show both stdout and stderr for failed commands
+        if result.stdout:
+            console.print(f"[red]Command output:[/red]\n{result.stdout}")
+        if result.stderr:
+            console.print(f"[red]Command error output:[/red]\n{result.stderr}")
+        if fatal_msg:
+            fatal_error_msg(fatal_msg)
 
     extra = {
         "stderr": result.stderr,
