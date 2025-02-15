@@ -1,3 +1,4 @@
+# keep this, because it makes sense for the user to be able to import from here
 from inspect import isfunction
 
 # these are occasionally useful for if statements,
@@ -32,6 +33,6 @@ def isiterable(x):
     """
     from http://stackoverflow.com/questions/1952464/in-python-how-do-i-determine-if-a-variable-is-iterable
     """
-    import collections
+    import collections.abc
 
-    return isinstance(x, collections.Iterable)
+    return isinstance(x, collections.abc.Iterable)

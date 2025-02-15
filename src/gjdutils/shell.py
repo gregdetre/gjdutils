@@ -2,7 +2,6 @@
 
 from pathlib import Path
 import shutil
-import subprocess
 import sys
 import venv
 from contextlib import contextmanager

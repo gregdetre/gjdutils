@@ -1,8 +1,6 @@
 import json
 from openai import OpenAI, NOT_GIVEN
-import os
-from pprint import pprint
-from typing import Any, Literal, Optional
+from typing import Literal, Optional
 
 from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from .rand import DEFAULT_RANDOM_SEED

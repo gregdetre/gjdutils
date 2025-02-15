@@ -121,7 +121,7 @@ def jinja_render(
 
     Will raise an error if CONTEXT is missing any variables.
     """
-    from jinja2 import Environment, FileSystemLoader, StrictUndefined, Template
+    from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
     loader = None if filesystem_loader is None else FileSystemLoader(filesystem_loader)
     env = Environment(loader=loader, undefined=StrictUndefined)

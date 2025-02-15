@@ -1,10 +1,8 @@
 import json
 from pathlib import Path
 from anthropic import Anthropic, NOT_GIVEN
-import os
 from typing import Optional
 
-from gjdutils.rand import DEFAULT_RANDOM_SEED
 from gjdutils.llm_utils import image_to_base64_basic
 from gjdutils.env import get_env_var
 

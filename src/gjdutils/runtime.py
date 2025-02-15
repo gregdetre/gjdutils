@@ -1,6 +1,6 @@
 import sys
 
-from gjdutils.env import get_env_var
+# keep this, because it makes sense for the user to be able to import this from here
 from gjdutils.pytest_utils import in_pytest
 
 

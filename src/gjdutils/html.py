@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
-from lxml import html as lxml_html
-from lxml.html import tostring, fromstring
-from lxml.etree import Element, _Element as ElementType
-from typing import Optional, Iterable, Union
+from lxml.html import tostring
+from lxml.etree import _Element as ElementType
+from typing import Optional, Union
 
 
 def remove_html_tags(html: str):

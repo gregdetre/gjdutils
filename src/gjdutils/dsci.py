@@ -1,16 +1,16 @@
 from collections import Counter
 import itertools
-import numpy as np
-import pandas as pd
-import random
-from scipy import spatial, sparse
 import sys
-from typing import Any, Iterable, Sequence
+from typing import Any, Sequence
 
+# keep this, because it makes sense for the user to be able to import from here
 from .rand import set_seeds
 
 
 def init_display_options():
+    import numpy as np
+    import pandas as pd
+
     # so that it's easier to see things in the terminal
     pd.set_option("display.max_rows", 10000)
     pd.set_option("display.max_columns", 1000)
@@ -74,6 +74,8 @@ def calc_normalised_std_tightness(vals: Sequence[float]) -> float:
     [19,  1, 40, 20] -> 0.31
     [ 9,  1, 70,  0] -> 0
     """
+    import numpy as np
+
     n = len(vals)
     if n == 0:
         raise Exception("Empty")
@@ -143,6 +145,8 @@ def convert_sim_dist_oneminus(val: float) -> float:
 
 
 def square_df_from_square(sq, features):
+    import pandas as pd
+
     df = pd.DataFrame(sq)
     # create a 'Feature' column
     df["Feature"] = features
@@ -154,6 +158,8 @@ def square_df_from_square(sq, features):
 
 
 def long_df_from_flat(dists_flat, features):
+    import pandas as pd
+
     combos = [(f1, f2) for f1, f2 in itertools.permutations(features, 2)]
     assert len(combos) == len(dists_flat)
     dists_triplet = [
@@ -164,6 +170,8 @@ def long_df_from_flat(dists_flat, features):
 
 
 def square_df_from_flat(dists_flat, features):
+    from scipy import spatial
+
     nFeatures = len(features)
     dists_sq = spatial.distance.squareform(np.array(dists_flat))
     assert dists_sq.shape == (nFeatures, nFeatures)

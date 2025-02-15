@@ -47,12 +47,13 @@ audio_lang = [
 ]
 dev = [
     "black",
-    "pytest",
     "build",
-    "twine",
-    "wheel",
+    "flake8",
+    "pytest",
     "rich",  # for console output formatting
+    "twine",
     "typer",  # for CLI tools
+    "wheel",
 ]
 dt = [
     "humanize",

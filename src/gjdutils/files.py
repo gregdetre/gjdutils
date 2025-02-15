@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Sequence
 
 from .cmd import run_cmd
+
+# keep this, because it makes sense for the user to be able to import from here
 from .strings import is_string, PathOrStr
 
 
