@@ -7,6 +7,10 @@ T = TypeVar("T")
 _processed_vars = set()
 
 
+# You may find it useful to run `scripts/export_all.sh .env` to first
+# export all the variables in your .env file to your environment.
+
+
 def get_env_var(name: str, typ: Any = StrictStr, verbose: int = 0) -> T:
     """Get environment variable with type validation, e.g.
 
