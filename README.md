@@ -6,6 +6,8 @@ This is a smorgasbord of utility functions, patterns and convenient wrappers tha
 
 Probably many of these exist elsewhere in libraries - if so, please let me know, because I'd probably rather use something cleaner and better-maintained.
 
+Caveat emptor: some of these are old, and haven't been tested in a while.
+
 
 ## Highlights
 
@@ -29,7 +31,7 @@ from pathlib import Path
 retcode, stdout, extra = run_cmd(
     "python --version",  # you can also provide as a list-of-strings
     before_msg="Checking Python version...",
-    fatal_msg="Some problem running Python",  # will show up in red
+    fatal_msg="Some problem running Python",  # will show up in red, sys.exit(1)
     verbose=0,  # Run silently unless there's an error
     **{"timeout": 5}  # Pass additional arguments to subprocess
 )
@@ -67,6 +69,7 @@ from gjdutils.rand import set_seeds
 set_seeds(42)  # Sets seeds for random, numpy, torch if available
 ```
 
+
 ### Call Claude/OpenAI APIs with function calling, image analysis & JSON support
 ```python
 from gjdutils.llms_claude import call_claude_gpt
@@ -74,7 +77,7 @@ from gjdutils.llm_utils import image_to_base64
 
 response, extra = call_claude_gpt(
     "What's in this image?",
-    image_filens=["path/to/image.jpg"],  # Can pass multiple images
+    image_filens=["path/to/image.jpg"],
     temperature=0.001
 )
 ```
@@ -107,11 +110,10 @@ uniformity = calc_proportion_identical(['a', 'a', 'a', 'b'])  # Returns 0.75 (75
 ```
 
 
-
 ### Generate deterministic cache keys for complex Python objects
 ```python
 from gjdutils.caching import generate_mckey
-cache_key = generate_mckey("myprefix", {"user_id": 123, "action": "login"})  # Creates deterministic cache key
+cache_key = generate_mckey("myprefix", {"a": 100, "b": "foo"})  # Creates deterministic cache key
 ```
 
 
@@ -120,7 +122,7 @@ cache_key = generate_mckey("myprefix", {"user_id": 123, "action": "login"})  # C
 from gjdutils.hashing import hash_readable
 
 # Same input always produces same hash, even across sessions
-config = {"model": "gpt-4", "temperature": 0.7}
+config = {"foo": "bar"}
 cache_key = hash_readable(config)  # e.g. "8f4e5d3..."
 ```
 
@@ -139,6 +141,7 @@ print(pretty)
 # </div>
 ```
 
+
 ### Debug by printing local variables, excluding noise
 ```python
 from gjdutils.misc import print_locals
@@ -151,6 +154,7 @@ def my_function(x, y):
     print_locals(locals(), ignore_functions=True, ignore_underscores=True)
     # Output: {'x': 1, 'y': 2, 'z': 3}
 ```
+
 
 ### Generate readable random IDs (no confusing characters)
 ```python
