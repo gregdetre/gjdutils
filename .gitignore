@@ -116,3 +116,5 @@ dmypy.json
 # added by GD
 .#*
 .DS_Store
+.pypirc
+
