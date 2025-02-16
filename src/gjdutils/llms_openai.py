@@ -5,7 +5,7 @@ from typing import Literal, Optional
 from .prompt_templates import summarise_list_of_texts_as_one, summarise_text
 from .rand import DEFAULT_RANDOM_SEED
 from .strings import jinja_render
-from gjdutils.llm_utils import contents_for_images
+from gjdutils.image_utils import contents_for_images
 from gjdutils.env import get_env_var
 
 

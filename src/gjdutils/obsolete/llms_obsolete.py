@@ -5,7 +5,6 @@ import os
 from pprint import pprint
 from typing import Any, Optional
 
-from gjdutils.llm_utils import proc_llm_out_json
 from gjdutils.llms_openai import (
     DEFAULT_MODEL_NAME,
     MODEL_NAME_GPT4_TURBO,
@@ -33,6 +32,31 @@ def model_from_model_name(model_name: Optional[str] = None, verbose: int = 0):
         model = llm.get_model(model_name)
         model.key = OPENAI_API_KEY
     return model, model_name
+
+
+def proc_llm_out_json(s: str):
+    # TODO probably we don't need this function any more, because OpenAI will guarantee JSON output
+    """
+    If GPT-4 returns json output like this:
+
+    ```json
+    ...
+    ```
+
+    This strips away that markdown wrapping.
+
+    Alternatively, consider using llm_prompt_json()
+    """
+    s = s.strip()
+    # remove the markdown code wrapping
+    if s.startswith("```json") and s.endswith("```"):
+        s = s[7:-3]
+    try:
+        j = json.loads(s)
+    except json.JSONDecodeError:
+        print("Failed to parse JSON:", s)
+        raise
+    return j
 
 
 def llm_prompt(

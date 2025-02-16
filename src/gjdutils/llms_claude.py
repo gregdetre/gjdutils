@@ -3,7 +3,7 @@ from pathlib import Path
 from anthropic import Anthropic, NOT_GIVEN
 from typing import Optional
 
-from gjdutils.llm_utils import image_to_base64_basic
+from gjdutils.image_utils import image_to_base64_basic
 from gjdutils.env import get_env_var
 
 CLAUDE_API_KEY = get_env_var("CLAUDE_API_KEY")
