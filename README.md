@@ -42,7 +42,7 @@ print(f"Ran command: {extra['cmd_str']}")  # plus lots of other stuff stored
 
 ### Environment variables with type validation and helpful error messages
 ```bash
-$ python -m gjdutils.scripts.export_all .env
+$ python -m gjdutils.scripts.export_envs .env
 ```
 
 ```python
@@ -206,4 +206,61 @@ python -m gjdutils.scripts.install_all_dev_dependencies
 To add to your `requirements.txt` in editable mode, e.g. to install all optional dependencies:
 ```text
 -e "git+https://github.com/gregdetre/gjdutils.git#egg=gjdutils[all_no_dev]"
+```
+
+## For gjdutils Developers
+
+### Deployment Process
+
+When you're ready to deploy a new version of `gjdutils`, follow these steps:
+
+1. Update the version number in `src/gjdutils/__version__.py`
+2. Ensure your Git working directory is clean (no uncommitted changes)
+3. Run the deployment scripts in this order:
+
+```bash
+# Test locally first (builds package and runs tests in a fresh venv)
+python -m scripts.check_locally
+
+# Deploy to PyPI Test and verify
+python -m scripts.deploy_pypitest
+python -m scripts.check_pypitest
+
+# Deploy to PyPI Production and verify
+python -m scripts.deploy_pypiprod
+python -m scripts.check_pypiprod
+
+# Or use the all-in-one deployment script that runs all the above
+python -m scripts.deploy_all
+```
+
+Each script will:
+- Verify prerequisites (git status, version numbers, etc.)
+- Ask for confirmation before making changes
+- Clean build directories
+- Build and test the package
+- Upload to the appropriate PyPI repository
+- Verify the upload was successful
+
+Note: The deployment scripts require you to have appropriate PyPI credentials configured.
+
+### Setting Up Environment Variables
+
+If you need to set environment variables for development or testing, you can use the provided `export_envs.sh` script:
+
+1. Create a `.env` file with your environment variables:
+```bash
+# .env example
+OPENAI_API_KEY=your-key-here
+NUM_WORKERS=4
+```
+
+2. Source the script to load the variables:
+```bash
+source scripts/export_envs.sh .env
+```
+
+This will export all non-commented variables from your `.env` file into your current shell session. You can verify it worked by checking any variable:
+```bash
+echo $OPENAI_API_KEY
 ```
