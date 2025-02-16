@@ -4,6 +4,7 @@ from pathlib import Path
 import urllib.request
 import urllib.error
 import shutil
+import tomllib
 from typing import Literal
 from rich.console import Console
 from rich.progress import track
@@ -11,9 +12,21 @@ from packaging.version import Version
 from importlib.metadata import metadata
 
 from gjdutils.cmd import run_cmd
-from gjdutils import __version__
 
 console = Console()
+
+
+def get_version() -> str:
+    """Get package version from pyproject.toml.
+
+    We read directly from pyproject.toml rather than using Python's packaging machinery
+    because we've had issues with the correct version being accessed in deployment/checking
+    machinery that creates virtualenvs. This provides a more reliable way to access the
+    true version from the source."""
+    with open("pyproject.toml", "rb") as f:
+        data = tomllib.load(f)
+    return data["project"]["version"]
+
 
 # Type for PyPI environment
 PyPIEnv = Literal["test", "prod"]
@@ -26,9 +39,10 @@ def verify_installation(python_path: Path):
         before_msg="Verify package installation by importing and checking version...",
         fatal_msg="Failed to import gjdutils",
     )
+    expected_version = get_version()
     assert (
-        installed_version == __version__
-    ), f"Installed version {installed_version} does not match expected version {__version__}"
+        installed_version == expected_version
+    ), f"Installed version {installed_version} does not match expected version {expected_version}"
     console.print(f"gjdutils version: {installed_version}")
     return installed_version
 
