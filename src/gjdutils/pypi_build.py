@@ -12,24 +12,9 @@ from packaging.version import Version
 from importlib.metadata import metadata
 
 from gjdutils.cmd import run_cmd
+from gjdutils import get_version
 
 console = Console()
-
-
-def get_version() -> str:
-    """Get package version from pyproject.toml.
-
-    We read directly from pyproject.toml rather than using Python's packaging machinery
-    because we've had issues with the correct version being accessed in deployment/checking
-    machinery that creates virtualenvs. This provides a more reliable way to access the
-    true version from the source."""
-    with open("pyproject.toml", "rb") as f:
-        data = tomllib.load(f)
-    return data["project"]["version"]
-
-
-# Type for PyPI environment
-PyPIEnv = Literal["test", "prod"]
 
 
 def verify_installation(python_path: Path):
@@ -45,6 +30,10 @@ def verify_installation(python_path: Path):
     ), f"Installed version {installed_version} does not match expected version {expected_version}"
     console.print(f"gjdutils version: {installed_version}")
     return installed_version
+
+
+# Type for PyPI environment
+PyPIEnv = Literal["test", "prod"]
 
 
 def check_install_optional_features(python_path: Path, *, from_test_pypi: bool = False):
