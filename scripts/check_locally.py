@@ -39,7 +39,7 @@ def install_and_test_package(python_path: Path, wheel_file: Path):
 
     # Command: pip install ".[dev]"
     run_cmd(
-        f"{python_path} -m pip install '.[dev]'",
+        f"{python_path} -m pip install '.[all_non_dev,dev]'",
         before_msg="Installing dev dependencies...",
         fatal_msg="Failed to install dev dependencies",
     )
