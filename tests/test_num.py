@@ -1,6 +1,6 @@
 from pytest import approx, raises
 
-from num import discretise
+from gjdutils.num import discretise
 
 
 def test_discretise():

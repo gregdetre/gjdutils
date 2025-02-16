@@ -20,7 +20,7 @@ def discretise(
     increment: Union[int, float] = 0.1,
     lower: Union[int, float] = 0.0,
     upper: Union[int, float] = 1.0,
-    enforce_range: bool = False,
+    enforce_range: bool = True,
 ):
     """
     You will probably want to cache this.
@@ -40,10 +40,10 @@ def discretise(
 
     if pd.isnull(val):
         return upper
-    if enforce_range:
-        assert (
-            lower <= val <= upper
-        ), f"Required: {lower:.2f} < {val:.2f} <= {upper:.2f}"
+    if enforce_range and (val < lower or val > upper):
+        raise ValueError(
+            f"Value {val:.2f} is outside the valid range [{lower:.2f}, {upper:.2f}]"
+        )
     increments = calc_increments(increment, lower, upper)
     if val < lower:
         return increments[0]

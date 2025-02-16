@@ -55,6 +55,10 @@ dev = [
     "typer",  # for CLI tools
     "wheel",
 ]
+dsci = [
+    "numpy",
+    "pandas",
+]
 dt = [
     "humanize",
     "pendulum",
@@ -72,6 +76,7 @@ llm = [
 
 all_no_dev = [
     "gjdutils[audio_lang]",
+    "gjdutils[dsci]",
     "gjdutils[dt]",
     "gjdutils[html_web]",
     "gjdutils[llm]",
