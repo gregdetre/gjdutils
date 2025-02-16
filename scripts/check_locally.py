@@ -37,9 +37,12 @@ def install_and_test_package(python_path: Path, wheel_file: Path):
         fatal_msg="Failed to install package",
     )
 
+    # Install all optional dependencies first
+    check_install_optional_features(python_path)
+
     # Command: pip install ".[dev]"
     run_cmd(
-        f"{python_path} -m pip install '.[all_non_dev,dev]'",
+        f"{python_path} -m pip install '.[dev]'",
         before_msg="Installing dev dependencies...",
         fatal_msg="Failed to install dev dependencies",
     )
@@ -65,7 +68,6 @@ def main():
         install_and_test_package(python_path, wheel_file)
         verify_installation(python_path)
         run_test_suite(python_path)
-        check_install_optional_features(python_path)
 
     console.print("\nLocal testing completed successfully!", style="green")
 

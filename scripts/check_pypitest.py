@@ -13,12 +13,15 @@ console = Console()
 
 def install_from_test_pypi(python_path: Path):
     # Command: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gjdutils
-    return run_cmd(
+    run_cmd(
         f"{python_path} -m pip install --index-url https://test.pypi.org/simple/ "
         "--extra-index-url https://pypi.org/simple/ gjdutils",
         before_msg="Installing package from Test PyPI...",
         fatal_msg="Failed to install package from Test PyPI",
     )
+
+    # Install all optional dependencies
+    check_install_optional_features(python_path, from_test_pypi=True)
 
 
 def main():
@@ -28,7 +31,6 @@ def main():
     with temp_venv(venv_path) as python_path:
         install_from_test_pypi(python_path)
         verify_installation(python_path)
-        check_install_optional_features(python_path, from_test_pypi=True)
 
     console.print("\nTest PyPI testing completed successfully!", style="green")
 

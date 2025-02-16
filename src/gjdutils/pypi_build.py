@@ -8,6 +8,7 @@ from typing import Literal
 from rich.console import Console
 from rich.progress import track
 from packaging.version import Version
+from importlib.metadata import metadata
 
 from gjdutils.cmd import run_cmd
 from gjdutils import __version__
@@ -34,17 +35,17 @@ def verify_installation(python_path: Path):
 
 def check_install_optional_features(python_path: Path, *, from_test_pypi: bool = False):
     """Test installation of optional feature sets."""
-    features = [
-        "audio_lang",
-        "dt",
-        "llm",
-        "html_web",
-    ]
+    # Get optional dependency groups from package metadata
+    pkg_metadata = metadata("gjdutils")
+    # Parse the provides-extra field to get optional dependency groups
+    # get_all() returns None if the field doesn't exist
+    extra_features = pkg_metadata.get_all("Provides-Extra") or []
+    features = [group for group in extra_features if group not in ["dev", "all_no_dev"]]
 
     for feature in track(features, description="Installing features"):
         console.print(f"\nTesting feature set: {feature}", style="yellow")
         if from_test_pypi:
-            cmd = f"{python_path} -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gjdutils"
+            cmd = f"{python_path} -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gjdutils[{feature}]"
         else:
             cmd = f"{python_path} -m pip install '.[{feature}]'"
         run_cmd(
