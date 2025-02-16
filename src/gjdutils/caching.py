@@ -2,7 +2,6 @@ from functools import update_wrapper
 import inspect
 import re
 
-from gjdutils.sorteddict import SortedDict
 from gjdutils.typ import isiterable
 
 
@@ -51,7 +50,7 @@ def generate_mckey(prefix, d):
         The idea is to ensure that no matter how D was
         created, you'll know what the key should be.
         """
-        sorted_d = SortedDict(lambda x: x)
+        sorted_d = dict()
         for k in sorted(d.keys()):
             sorted_d[k] = d[k]
         return sorted_d
