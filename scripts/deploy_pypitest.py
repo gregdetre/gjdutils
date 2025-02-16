@@ -5,14 +5,13 @@ from pathlib import Path
 from packaging.version import Version
 
 from gjdutils import __version__
-from gjdutils.decorators import console_print_doc
 from gjdutils.pypi_build import (
     check_version_exists,
     clean_build_dirs,
     build_package,
     upload_to_pypi,
 )
-from scripts.check_pypitest import main as check_pypitest_main
+from .check_pypitest import main as check_pypitest_main
 from gjdutils.shell import fatal_error_msg
 
 console = Console()
@@ -24,7 +23,7 @@ def main():
     # Check if version already exists
     if check_version_exists(Version(__version__), pypi_env="test"):
         fatal_error_msg(
-            f"Version {__version__} already exists on Test PyPI.\nPlease update __VERSION__.py to a new version number first."
+            f"Version {__version__} already exists on Test PyPI.\nPlease update the version in pyproject.toml to a new version number first."
         )
 
     # Execute deployment steps

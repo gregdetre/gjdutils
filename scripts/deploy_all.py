@@ -2,9 +2,9 @@
 
 from rich.console import Console
 
-from check_locally import main as check_locally_main
-from deploy_pypitest import main as deploy_pypitest_main
-from deploy_pypiprod import main as deploy_pypiprod_main
+from .check_locally import main as check_locally_main
+from .deploy_pypitest import main as deploy_pypitest_main
+from .deploy_pypiprod import main as deploy_pypiprod_main
 
 console = Console()
 

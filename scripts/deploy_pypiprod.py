@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
 from rich.console import Console
-from pathlib import Path
 from packaging.version import Version
 
 from gjdutils import __version__
-from gjdutils.decorators import console_print_doc
 from gjdutils.pypi_build import (
     check_version_exists,
     clean_build_dirs,
@@ -13,9 +11,8 @@ from gjdutils.pypi_build import (
     upload_to_pypi,
 )
 from gjdutils.shell import fatal_error_msg
-from gjdutils.cmd import run_cmd
-from scripts.check_git_clean import check_git_status
-from scripts.check_pypiprod import main as check_pypiprod_main
+from .check_git_clean import check_git_status
+from .check_pypiprod import main as check_pypiprod_main
 
 
 console = Console()
@@ -30,7 +27,7 @@ def main():
     # Check if version already exists
     if check_version_exists(Version(__version__), pypi_env="prod"):
         fatal_error_msg(
-            f"Version {__version__} already exists on PyPI.\nPlease update __VERSION__.py to a new version number first."
+            f"Version {__version__} already exists on PyPI.\nPlease update the version in pyproject.toml to a new version number first."
         )
 
     # Confirm with user before proceeding

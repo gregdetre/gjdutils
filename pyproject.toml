@@ -1,8 +1,7 @@
 [project]
 # case-insensitive
 name = "GJDutils"
-# https://hatch.pypa.io/latest/config/metadata/
-dynamic = ["version"]
+version = "0.3.2"
 authors = [
   { name="Greg Detre", email="greg@gregdetre.com" },
 ]
@@ -100,6 +99,3 @@ exclude = [
     "gjdutils/todo/",
     "tests/fixme_*.py",
 ]
-
-[tool.hatch.version]
-path = "__VERSION__.py"

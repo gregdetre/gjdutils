@@ -1,12 +1,16 @@
-import os
-import sys
+"""
+GJDutils - A collection of useful utility functions
+"""
 
-# Add the root directory to Python path to import __VERSION__
-root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-if root_dir not in sys.path:
-    sys.path.append(root_dir)
+from importlib.metadata import version, PackageNotFoundError
 
-from __VERSION__ import __version__
-
-# Export version at package level
-__version__ = __version__
+try:
+    # The package name must match the one used in pyproject.toml
+    __version__ = version("GJDutils")  # case-sensitive!
+except PackageNotFoundError:
+    # Package is not installed
+    raise RuntimeError(
+        "Could not determine gjdutils version. "
+        "This usually means the package is not properly installed. "
+        "Please install via pip or in editable mode with 'pip install -e .'"
+    )
