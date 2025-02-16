@@ -2,13 +2,13 @@
 GJDutils - A collection of useful utility functions
 """
 
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import metadata, PackageNotFoundError
 
 try:
-    # The package name must match the one used in pyproject.toml
-    __version__ = version("GJDutils")  # case-sensitive!
+    # Get version from package metadata (works for both installed and editable mode)
+    pkg_metadata = metadata("GJDutils")  # case-sensitive!
+    __version__ = pkg_metadata["Version"]
 except PackageNotFoundError:
-    # Package is not installed
     raise RuntimeError(
         "Could not determine gjdutils version. "
         "This usually means the package is not properly installed. "
