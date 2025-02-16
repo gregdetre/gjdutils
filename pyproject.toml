@@ -1,7 +1,7 @@
 [project]
 # case-insensitive
 name = "GJDutils"
-version = "0.3.6"
+dynamic = ["version"]
 authors = [
   { name="Greg Detre", email="greg@gregdetre.com" },
 ]
@@ -91,6 +91,9 @@ Repository = "https://github.com/gregdetre/gjdutils"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/gjdutils/__version__.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
