@@ -19,9 +19,9 @@ def temp_env_file() -> Generator[Path, None, None]:
     path.unlink()
 
 
-def test_export_all_script(temp_env_file):
-    """Test that export_all.sh behaves correctly when executed vs sourced."""
-    script_path = Path("scripts/export_all.sh")
+def test_export_envs_script(temp_env_file):
+    """Test that export_envs.sh behaves correctly when executed vs sourced."""
+    script_path = Path("scripts/export_envs.sh")
 
     # Test direct execution fails
     result = subprocess.run(
@@ -47,7 +47,7 @@ def test_export_all_script(temp_env_file):
 def test_get_env_var():
     """Test get_env_var functionality with different types."""
     # Set test variables directly in Python's environment (we can't use
-    # export_all.sh here because it doesn't work with subprocesses)
+    # export_envs.sh here because it doesn't work with subprocesses)
     os.environ["GJDUTILS_TEST_STR"] = "hello"
     os.environ["GJDUTILS_TEST_INT"] = "42"
 

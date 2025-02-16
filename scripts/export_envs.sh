@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # https://stackoverflow.com/a/20909045/230523
-# e.g. source scripts/export_all.sh .env && echo $TESTME
+# e.g. source scripts/export_envs.sh .env && echo $TESTME
 
 # Check if the script is being sourced
 if [ "$0" = "$BASH_SOURCE" ]; then

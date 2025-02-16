@@ -9,7 +9,7 @@ T = TypeVar("T")
 _processed_vars = set()
 
 
-# You may find it useful to run `python -m gjdutils.scripts.export_all .env` to first
+# You may find it useful to run `python -m gjdutils.scripts.export_envs .env` to first
 # export all the variables in your .env file to your environment.
 
 
