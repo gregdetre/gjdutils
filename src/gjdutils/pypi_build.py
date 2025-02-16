@@ -12,7 +12,7 @@ from packaging.version import Version
 from importlib.metadata import metadata
 
 from gjdutils.cmd import run_cmd
-from gjdutils import get_version
+from gjdutils import __version__
 
 console = Console()
 
@@ -24,7 +24,7 @@ def verify_installation(python_path: Path):
         before_msg="Verify package installation by importing and checking version...",
         fatal_msg="Failed to import gjdutils",
     )
-    expected_version = get_version()
+    expected_version = __version__
     assert (
         installed_version == expected_version
     ), f"Installed version {installed_version} does not match expected version {expected_version}"

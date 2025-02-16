@@ -1,7 +1,7 @@
 [project]
 # case-insensitive
 name = "GJDutils"
-version = "0.3.5"
+version = "0.3.6"
 authors = [
   { name="Greg Detre", email="greg@gregdetre.com" },
 ]
