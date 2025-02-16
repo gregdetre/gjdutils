@@ -33,9 +33,9 @@ def proc_llm_out_json(s: str):
         s = s[7:-3]
     try:
         j = json.loads(s)
-    except:
-        print(s)
-        raise Exception("Could not parse JSON from LLM output")
+    except json.JSONDecodeError:
+        print("Failed to parse JSON:", s)
+        raise
     return j
 
 

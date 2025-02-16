@@ -6,10 +6,12 @@ def jsonify(x):
     def json_dumper_robust(obj):
         try:
             return obj.toJSON()
-        except:
+        except AttributeError:
+            # Object doesn't have toJSON method, try string conversion
             try:
                 return str(obj)
-            except:
+            except (ValueError, TypeError):
+                # If string conversion fails, return None to skip this field
                 return None
 
     return json.dumps(x, sort_keys=True, indent=4, default=json_dumper_robust)
@@ -49,6 +51,8 @@ def to_json(
     Convert a list of dicts to a JSON string, with only the fields we want,
     and in the same order as FIELDS.
     """
+    if fields is None:
+        fields = []
     outs = []
     for inp in inps:
         if fields is None:
@@ -56,7 +60,7 @@ def to_json(
         # we want to make sure to return a dict with only the fields we want,
         # and in the same order as FIELDS
         out = {}
-        for k in fields:
+        for k in fields:  # type: ignore
             if skip_if_missing and (k not in inp):
                 continue
             v = inp[k]  # will error if missing and !SKIP_IF_MISSING
