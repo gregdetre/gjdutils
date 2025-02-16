@@ -42,7 +42,7 @@ print(f"Ran command: {extra['cmd_str']}")  # plus lots of other stuff stored
 
 ### Environment variables with type validation and helpful error messages
 ```bash
-$ source scripts/export_all.sh .env
+$ python -m gjdutils.scripts.export_all .env
 ```
 
 ```python
@@ -197,7 +197,7 @@ pip install -e ".[all_no_dev, dev]"     # Install all optional dependencies
 Or if you're feeling lazy and can't remember that command, just use:
 
 ```bash
-python scripts/install_all_dev_dependencies.py
+python -m gjdutils.scripts.install_all_dev_dependencies
 ```
 
 

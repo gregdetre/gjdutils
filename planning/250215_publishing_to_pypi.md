@@ -16,7 +16,7 @@
 1. Build and test package locally:
    ```bash
    # Option 1: Automated testing script (recommended)
-   ./scripts/check_locally.sh
+   python -m gjdutils.scripts.check_locally
    
    # Option 2: Manual steps
    # Clean any existing builds
@@ -29,7 +29,7 @@
 2. Test PyPI Deployment:
    ```bash
    # Option 1: Automated testing script (recommended)
-   ./scripts/check_test_pypi.sh
+   python -m gjdutils.scripts.check_test_pypi
    
    # Option 2: Manual steps
    # Upload to test.pypi.org
