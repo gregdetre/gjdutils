@@ -24,7 +24,12 @@ dependencies = [
     "jinja2",
     "python-dotenv",
     "pydantic",
+    "typer",  # For CLI
+    "rich",   # For CLI output formatting
 ]
+
+[project.scripts]
+gjdutils = "gjdutils.cli:app"
 
 # if you add a new optional dependency group, remember to add it to the 'all' group below
 [project.optional-dependencies]
