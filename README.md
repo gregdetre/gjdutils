@@ -214,9 +214,9 @@ To add to your `requirements.txt` in editable mode, e.g. to install all optional
 
 When you're ready to deploy a new version of `gjdutils`, follow these steps:
 
-1. Update the version number in `src/gjdutils/__version__.py`
-2. Ensure your Git working directory is clean (no uncommitted changes)
-3. Run the deployment scripts in this order:
+- Update the version number in `src/gjdutils/__version__.py`
+- Ensure your Git working directory is clean (no uncommitted changes)
+- Run the deployment scripts in this order:
 
 ```bash
 # Test locally first (builds package and runs tests in a fresh venv)

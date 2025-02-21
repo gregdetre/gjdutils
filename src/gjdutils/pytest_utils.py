@@ -2,21 +2,27 @@ import os
 import sys
 
 
-def in_pytest():
-    # https://stackoverflow.com/a/44595269/230523
-    #
-    # "Of course, this solution only works if the code you're trying to test does not use pytest itself.
-    mod_bool = "pytest" in sys.modules
+def in_pytest(check_modules=True, check_env=True):
+    assert check_modules or check_env, "At least one check must be performed"
+    checks = []
+    if check_modules:
+        # https://stackoverflow.com/a/44595269/230523
+        #
+        # "Of course, this solution only works if the code you're trying to test does not use pytest itself.
+        mod_bool = "pytest" in sys.modules
+        checks.append(mod_bool)
 
-    # from https://stackoverflow.com/a/58866220/230523
-    #
-    # "This method works only when an actual test is being run.
-    # "This detection will not work when modules are imported during pytest collection.
-    env_bool = "PYTEST_CURRENT_TEST" in os.environ
+    if check_env:
+        # from https://stackoverflow.com/a/58866220/230523
+        #
+        # "This method works only when an actual test is being run.
+        # "This detection will not work when modules are imported during pytest collection.
+        env_bool = "PYTEST_CURRENT_TEST" in os.environ
+        checks.append(env_bool)
 
-    if mod_bool and env_bool:
+    if all(checks):
         return True
-    elif not mod_bool and not env_bool:
+    elif not any(checks):
         return False
     else:
         raise RuntimeError(
