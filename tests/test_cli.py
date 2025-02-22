@@ -8,7 +8,7 @@ runner = CliRunner()
 def test_version():
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert f"gjdutils version {__version__}" in result.stdout
+    assert result.stdout.strip() == __version__
 
 
 def test_help():
@@ -16,17 +16,4 @@ def test_help():
     assert result.exit_code == 0
     assert "GJDutils CLI" in result.stdout
     assert "version" in result.stdout
-    assert "env" in result.stdout
-
-
-def test_env_help():
-    result = runner.invoke(app, ["env", "--help"])
-    assert result.exit_code == 0
-    assert "Environment variable management commands" in result.stdout
-    assert "export" in result.stdout
-
-
-def test_env_export_help():
-    result = runner.invoke(app, ["env", "export", "--help"])
-    assert result.exit_code == 0
-    assert "Path to .env file" in result.stdout
+    assert "git-clean" in result.stdout

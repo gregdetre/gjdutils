@@ -9,7 +9,7 @@ from gjdutils.env import get_env_var
 
 
 @pytest.fixture
-def temp_env_file() -> Generator[Path, None, None]:
+def temp_env_file(tmp_path):
     """Create a temporary .env file for testing."""
     with tempfile.NamedTemporaryFile(mode="w", suffix=".env", delete=False) as f:
         f.write("GJDUTILS_TEST_STR=hello\n")
@@ -21,14 +21,14 @@ def temp_env_file() -> Generator[Path, None, None]:
 
 def test_export_envs_script(temp_env_file):
     """Test that export_envs.sh behaves correctly when executed vs sourced."""
-    script_path = Path("scripts/export_envs.sh")
+    script_path = Path("src/gjdutils/scripts/export_envs.sh")
 
     # Test direct execution fails
     result = subprocess.run(
         [str(script_path), str(temp_env_file)], capture_output=True, text=True
     )
     assert result.returncode != 0
-    assert "needs to be sourced" in result.stderr + result.stdout
+    assert "needs to be sourced" in result.stdout
 
     # Test sourcing works and sets variables
     result = subprocess.run(
