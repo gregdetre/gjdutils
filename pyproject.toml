@@ -30,6 +30,7 @@ dependencies = [
 
 [project.scripts]
 gjdutils = "gjdutils.cli:app"
+gjdutils-export-envs = "gjdutils.scripts.install:install_export_envs"
 
 # if you add a new optional dependency group, remember to add it to the 'all' group below
 [project.optional-dependencies]
@@ -107,3 +108,9 @@ exclude = [
     "gjdutils/todo/",
     "tests/fixme_*.py",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gjdutils"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"src/gjdutils/scripts/export_envs.sh" = "bin/export_envs.sh"
