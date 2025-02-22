@@ -1,4 +1,6 @@
 import typer
+
+from gjdutils.shell import fatal_error_msg
 from .pypi import app as pypi_app
 from .check_git_clean import check_git_clean
 
@@ -25,6 +27,13 @@ def version():
 def git_clean():
     """Check if git working directory is clean"""
     check_git_clean()
+
+
+@app.command()
+def export_envs():
+    fatal_error_msg(
+        "Exporting envs can't be run from Python - you have to run `source gjd-export-envs [ENV_FILE]`"
+    )
 
 
 if __name__ == "__main__":
