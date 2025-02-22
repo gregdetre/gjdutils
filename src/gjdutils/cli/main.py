@@ -1,5 +1,4 @@
 import typer
-from gjdutils.cli import env
 
 app = typer.Typer(
     help="GJDutils CLI - utility functions for data science, AI, and web development",
@@ -7,9 +6,6 @@ app = typer.Typer(
     no_args_is_help=True,
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-
-# Add command groups
-app.add_typer(env.app, name="env")
 
 
 @app.command()

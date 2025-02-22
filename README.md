@@ -41,15 +41,20 @@ print(f"Ran command: {extra['cmd_str']}")  # plus lots of other stuff stored
 
 
 ### Environment variables with type validation and helpful error messages
-```bash
-$ python -m gjdutils.scripts.export_envs .env
-```
-
 ```python
 from gjdutils.env import get_env_var
 
 api_key = get_env_var("OPENAI_API_KEY")  # Ensures non-empty by default
 num_workers = get_env_var("NUM_WORKERS", typ=int)  # Validates and converts to int
+```
+
+To load environment variables from a `.env` file into your shell:
+```bash
+# First install gjdutils
+pip install gjdutils
+
+# Then source the export script with your .env file
+source gjdutils-export-envs .env
 ```
 
 ### Strict Jinja templating that catches both undefined and unused variables
@@ -246,7 +251,7 @@ Note: The deployment scripts require you to have appropriate PyPI credentials co
 
 ### Setting Up Environment Variables
 
-If you need to set environment variables for development or testing, you can use the provided `export_envs.sh` script:
+To set environment variables for development or testing, use the `gjdutils-export-envs` command:
 
 1. Create a `.env` file with your environment variables:
 ```bash
@@ -257,10 +262,22 @@ NUM_WORKERS=4
 
 2. Source the script to load the variables:
 ```bash
-source scripts/export_envs.sh .env
+source gjdutils-export-envs .env
 ```
 
 This will export all non-commented variables from your `.env` file into your current shell session. You can verify it worked by checking any variable:
 ```bash
 echo $OPENAI_API_KEY
+```
+
+## Command Line Interface
+
+`gjdutils` comes with several helpful command-line tools:
+
+```bash
+# Show version information
+gjdutils version
+
+# Export environment variables from a .env file (must be sourced)
+source gjdutils-export-envs .env
 ```
