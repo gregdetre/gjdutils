@@ -1,4 +1,5 @@
 import typer
+from .pypi import app as pypi_app
 
 app = typer.Typer(
     help="GJDutils CLI - utility functions for data science, AI, and web development",
@@ -6,6 +7,9 @@ app = typer.Typer(
     no_args_is_help=True,
     context_settings={"help_option_names": ["-h", "--help"]},
 )
+
+# Add PyPI commands
+app.add_typer(pypi_app, name="pypi")
 
 
 @app.command()

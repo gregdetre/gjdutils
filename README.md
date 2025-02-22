@@ -278,6 +278,15 @@ echo $OPENAI_API_KEY
 # Show version information
 gjdutils version
 
+# PyPI package management commands
+gjdutils pypi check local  # Test package installation locally
+gjdutils pypi check test   # Test package from Test PyPI
+gjdutils pypi check prod   # Test package from Production PyPI
+
+gjdutils pypi deploy test  # Deploy to Test PyPI
+gjdutils pypi deploy prod  # Deploy to Production PyPI
+gjdutils pypi deploy all   # Run full deployment process (local -> test -> prod)
+
 # Export environment variables from a .env file (must be sourced)
 source gjdutils-export-envs .env
 ```
