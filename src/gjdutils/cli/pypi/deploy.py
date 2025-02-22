@@ -5,7 +5,7 @@ from rich.console import Console
 from packaging.version import Version
 
 from gjdutils import __version__
-from gjdutils.cli.check_git_clean import check_git_status
+from gjdutils.cli.check_git_clean import check_git_clean
 from gjdutils.cli.pypi.check import check_local, check_prod, check_test
 from gjdutils.pypi_build import (
     build_package,
@@ -49,7 +49,7 @@ def deploy_prod():
     console.rule("[yellow]Starting Production PyPI Deployment")
 
     # Check git status first
-    check_git_status()
+    check_git_clean()
 
     # Check if version already exists
     if check_version_exists(Version(__version__), pypi_env="prod"):

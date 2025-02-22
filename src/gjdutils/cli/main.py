@@ -1,5 +1,6 @@
 import typer
 from .pypi import app as pypi_app
+from .check_git_clean import check_git_clean
 
 app = typer.Typer(
     help="GJDutils CLI - utility functions for data science, AI, and web development",
@@ -18,6 +19,12 @@ def version():
     from gjdutils.__version__ import __version__
 
     typer.echo(f"{__version__}")
+
+
+@app.command()
+def git_clean():
+    """Check if git working directory is clean"""
+    check_git_clean()
 
 
 if __name__ == "__main__":

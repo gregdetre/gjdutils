@@ -7,7 +7,7 @@ from gjdutils.cmd import run_cmd
 console = Console()
 
 
-def check_git_status():
+def check_git_clean():
     """Check if git working directory is clean."""
     # Check for unstaged changes
     retcode, stdout, _ = run_cmd("git diff --quiet", check=False)
@@ -31,7 +31,7 @@ def check_git_status():
 
 def main():
     console.rule("[yellow]Checking Git Status")
-    check_git_status()
+    check_git_clean()
 
 
 if __name__ == "__main__":
