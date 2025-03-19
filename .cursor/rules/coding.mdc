@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+By default, raise errors early, clearly & fatally. Prefer not to wrap in try/except.
+
+Prioritise simplicity, debuggability, and readability. Try to keep things concise, don't over-comment, over-log, or over-engineer.
+
+Aim to keep changes minimal, and focused on the task at hand.
+
+Aim to reuse code, and use sub-functions to make long/complex functions clearer.
+
+If things don't make sense or seem like a bad idea, ask questions or discuss rather than just going along with it.
+
+Start every response with the 👩‍💻 emoji.
+
+Fix the root cause rather than putting on a band-aid.
