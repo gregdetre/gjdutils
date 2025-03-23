@@ -1,4 +1,5 @@
 from typing import Any, Literal, Optional
+import json
 
 from anthropic import Anthropic
 from openai import OpenAI
@@ -9,6 +10,56 @@ from gjdutils.strings import jinja_render
 
 
 MODEL_TYPE = Literal["openai", "claude"]
+
+
+def extract_json_from_markdown(text: str, verbose: bool = False) -> str:
+    """
+    Extracts JSON content from text that may be wrapped in markdown code blocks.
+    
+    Args:
+        text: The text that may contain JSON, possibly within markdown code blocks
+        verbose: Whether to print debug information
+        
+    Returns:
+        A string containing just the JSON content (still as a string, not parsed)
+    """
+    # If it's already valid JSON, return as is
+    try:
+        json.loads(text)
+        if verbose:
+            print("Input is already valid JSON")
+        return text
+    except json.JSONDecodeError:
+        # Not valid JSON, may be wrapped in markdown
+        pass
+    
+    # Handle JSON wrapped in markdown code blocks
+    if text.strip().startswith("```") and "```" in text:
+        if verbose:
+            print("Detected markdown code block")
+        
+        # Extract content between backticks
+        parts = text.split("```", 2)
+        if len(parts) >= 2:
+            extracted = parts[1]  # Get the middle part
+            
+            # Remove the language identifier if present
+            if extracted.strip().startswith("json"):
+                extracted = extracted[4:].strip()
+            else:
+                extracted = extracted.strip()
+                
+            # If there are closing backticks, remove everything from them onwards
+            if "```" in extracted:
+                extracted = extracted.split("```", 1)[0].strip()
+            
+            if verbose:
+                print(f"Extracted content from markdown: {extracted[:50]}...")
+                
+            return extracted
+    
+    # If we got here, we couldn't extract JSON from markdown
+    return text
 
 
 def generate_gpt_from_template(

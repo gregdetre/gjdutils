@@ -6,6 +6,7 @@ from typing import Optional
 from gjdutils.image_utils import image_to_base64_basic
 from gjdutils.env import get_env_var
 
+
 CLAUDE_API_KEY = get_env_var("CLAUDE_API_KEY")
 # https://docs.anthropic.com/en/docs/about-claude/models
 MODEL_NAME_CLAUDE_SONNET_GOOD_LATEST = "claude-3-7-sonnet-latest"
@@ -57,6 +58,8 @@ def call_claude_gpt(
     verbose: int = 0,
 ):
     """Call Claude API with support for text, images, and function calling"""
+    from gjdutils.llm_utils import extract_json_from_markdown
+
     extra = locals()
     extra.pop("client")
 
@@ -108,7 +111,22 @@ def call_claude_gpt(
 
     msg = response.content[0].text  # type: ignore
     if response_json:
-        msg = json.loads(msg)
+        print("Processing JSON response from Claude...")
+        try:
+            print(f"Raw Claude response before JSON parsing: {msg}")
+
+            # Use our utility function to handle markdown-wrapped JSON
+            clean_json_text = extract_json_from_markdown(msg, verbose=True)
+
+            msg = json.loads(clean_json_text)
+        except json.JSONDecodeError as e:
+            print(f"JSON decode error: {e}")
+            print(f"Raw message causing error: {msg}")
+            # Return a structured error response instead of failing
+            msg = {
+                "error": "Failed to parse API response",
+                "raw_response": msg[:500] if msg else "Empty response",
+            }
     extra.update(
         {
             "response": response.model_dump(),
