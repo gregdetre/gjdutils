@@ -93,11 +93,14 @@ def call_claude_gpt(
                 ]
             )
 
-    # Add text prompt
+    # if response_json:
+    #     # Add instruction to respond in JSON format - be very explicit
+    #     prompt = f"Please provide your response in valid JSON format without any markdown formatting or backticks. Provide ONLY the JSON object, not any explanatory text before or after the JSON. {prompt}"
+
     contents.append({"type": "text", "text": prompt})
 
-    # Prepare response format
-    response_format = {"type": "json_object"} if response_json else None
+    # not supported
+    # response_format = {"type": "json_object"} if response_json else None
 
     # Make API call
     response = client.messages.create(
@@ -111,9 +114,9 @@ def call_claude_gpt(
 
     msg = response.content[0].text  # type: ignore
     if response_json:
-        print("Processing JSON response from Claude...")
+        # print("Processing JSON response from Claude...")
         try:
-            print(f"Raw Claude response before JSON parsing: {msg}")
+            # print(f"Raw Claude response before JSON parsing: {msg}")
 
             # Use our utility function to handle markdown-wrapped JSON
             clean_json_text = extract_json_from_markdown(msg, verbose=True)
@@ -122,6 +125,7 @@ def call_claude_gpt(
         except json.JSONDecodeError as e:
             print(f"JSON decode error: {e}")
             print(f"Raw message causing error: {msg}")
+            print(f"Cleaned: {clean_json_text}")
             # Return a structured error response instead of failing
             msg = {
                 "error": "Failed to parse API response",
