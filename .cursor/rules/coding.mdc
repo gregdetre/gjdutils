@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 By default, raise errors early, clearly & fatally. Prefer not to wrap in try/except.
 
@@ -14,3 +14,5 @@ Aim to reuse code, and use sub-functions to make long/complex functions clearer.
 If things don't make sense or seem like a bad idea, ask questions or discuss rather than just going along with it.
 
 Fix the root cause rather than putting on a band-aid.
+
+Comment sparingly - reserve it for explaining surprising or confusing sections.
