@@ -120,3 +120,6 @@ dmypy.json
 .pypirc
 
 mcp.json
+
+# Claude Code local settings
+.claude/settings.local.json
