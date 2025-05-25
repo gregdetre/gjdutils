@@ -209,10 +209,11 @@ def outloud_elevenlabs(
     client = ElevenLabs(
         api_key=api_key,
     )
-    audio = client.generate(
+    audio = client.text_to_speech.convert(
         text=text,
-        voice=bot_name,
-        model=model,
+        voice_id=bot_name,
+        model_id=model,
+        output_format="mp3_44100_128",
     )
     if mp3_filen is not None:
         save(audio, mp3_filen)  # type: ignore

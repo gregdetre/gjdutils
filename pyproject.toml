@@ -38,7 +38,7 @@ audio_lang = [
     "azure-cognitiveservices-speech",
     "google-cloud-texttospeech",
     "google-cloud-translate",
-    "elevenlabs",
+    "elevenlabs>=2.1.0",
     # for playing mp3
     "playsound",
     # for voice_speechrecognition Microphone
