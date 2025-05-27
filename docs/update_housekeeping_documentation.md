@@ -1,0 +1,118 @@
+# Update Housekeeping Documentation
+
+This document describes the process for keeping project documentation up-to-date as the codebase evolves. Documentation housekeeping should be performed regularly to ensure accuracy and prevent confusion.
+
+## See also
+
+- `docs/WRITING_EVERGREEN_DOCS.md` - Guidelines for writing evergreen documentation
+- `docs/WRITING_PLANNING_DOCS.md` - Guidelines for ephemeral planning documents
+- `docs/GIT_COMMITS.md` - How to commit documentation updates
+
+## When to Update Documentation
+
+Perform documentation housekeeping:
+- After implementing major features
+- When architectural decisions change
+- When you notice outdated information while working
+- As a periodic maintenance task (e.g., weekly/monthly)
+- Before major releases or milestones
+
+## Process Overview
+
+### Step 1: Comprehensive Review
+
+Read all key documentation to understand the current state:
+1. `README.md` - Project overview and goals
+2. `docs/*.md` - All evergreen documentation
+3. Recent `planning/*.md` - Latest decisions and changes
+4. Key code files and API routes
+5. Configuration files and migrations
+
+Use subagents where appropriate to maintain context efficiency.
+
+### Step 2: Identify Outdated Content
+
+Look for:
+- **Feature Status Mismatches** - Documentation says "not implemented" but code exists
+- **Architectural Drift** - Documentation describes old approaches superseded by new decisions
+- **Missing Features** - New functionality not documented
+- **Broken Cross-References** - Links to renamed/removed files
+- **Duplicate Information** - Same content in multiple places (consolidate to one location)
+- **Incomplete Sections** - Placeholder or stub documentation
+
+### Step 3: Update Documentation
+
+Follow these principles:
+1. **Single Source of Truth** - Information should exist in one canonical location
+2. **Cross-Reference** - Link to canonical docs rather than duplicating content
+3. **Transitional States** - Document both current and target states during migrations
+4. **Clear Status** - Mark features/approaches as current, deprecated, or planned
+
+#### Common Update Patterns
+
+**Feature Implementation Status**
+```markdown
+# Before
+**Missing Features**
+- AI integration not yet implemented
+- Summaries not built
+
+# After  
+**Implemented Features**
+- AI integration with Claude Sonnet 4 ✓
+- Hierarchical summaries with hover tooltips ✓
+
+**Planned Features**
+- Document upload functionality
+- User authentication
+```
+
+**Architectural Changes**
+```markdown
+# Add transitional documentation
+**Current State**: Code uses decomposed element storage
+**Target State**: Single-row document storage (see ARCHITECTURE.md)
+**Migration Status**: Schema exists, code needs updating
+```
+
+**Cross-References**
+```markdown
+# Instead of duplicating prompt template info
+see `docs/LLM_PROMPT_TEMPLATES.md` for prompt template architecture
+```
+
+### Step 5: Review and suggest a commit
+
+1. **Self-Review** - Re-read all changes for consistency
+2. **Test Links** - Verify cross-references work
+3. **Check Examples** - Ensure code examples match current implementation
+4. **Commit Message** - Follow `docs/GIT_COMMITS.md` guidelines
+
+Example commit message:
+```
+docs: update documentation to reflect current implementation
+
+- Update PROJECT_STATUS.md with implemented AI features
+- Reflect database architecture transition in database docs
+- Add cross-references to LLM_PROMPT_TEMPLATES.md
+- Update TABLE_OF_CONTENTS_PANE.md with tabs and tooltips
+```
+
+## Documentation Quality Checklist
+
+Before committing, ensure:
+- [ ] No contradictions between documents
+- [ ] Status accurately reflects implementation
+- [ ] Cross-references are valid
+- [ ] Transitional states are clearly marked
+- [ ] "See also" sections are comprehensive
+- [ ] Examples match current code patterns
+- [ ] Technical details are accurate
+
+## Common Pitfalls
+
+1. **Over-updating** - Don't change accurate historical records in planning docs
+2. **Under-referencing** - Always add "see also" links for related topics
+3. **Duplication** - Resist copying content; link to canonical source
+4. **Vague Status** - Be specific about what's implemented vs planned
+5. **Missing Context** - Explain why architectural changes were made

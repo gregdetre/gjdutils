@@ -1,22 +1,11 @@
-These Cursor rules need to copied or symlinked to /your/project/.cursor/rules/
-
-To include all of them, run this in your current project root dir:
-
-```
-mkdir -p .cursor/rules
-ln -s "/path/to/gjdutils/.cursor/rules" ".cursor/rules/gjdutils_rules"
-```
-
-These `gjdutils` rules are mostly generic, though @testing-python.mdc and @writing-planning-docs.mdc reference specific paths.
-
-These rules have all been marked as manual. You may want to define how they'll be applied for your project.
+I've found the Cursor rules to be a bit unreliable, so I've moved all of them to straight Markdown .md docs in `docs/`.
 
 My current approach is to create lots of small rules and explicitly reference one or more of them explicitly, but I'm sure this will evolve over time.
 
 e.g.
 
-- Debug problem X, following @scientistic-detective.mdc
+- Debug problem X, following @scientistic_detective_mode.mdc
 
-- Do X, following @coding.mdc @sounding-board.mdc @testing-python.mdc
+- Do X, following `coding_principles.md`. Be in `sounding_board_mode.md`. See also `testing_python.md`
 
-- Write a planning doc for X, following @writing-planning.mdc
+- Write a planning doc for X, following `writing_planning_docs.md`.
