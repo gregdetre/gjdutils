@@ -25,6 +25,7 @@
 - Keep documentation up-to-date as you go
 
 ## Collaboration
+- If the user asks you a question, answer it directly, and stop work on other tasks until consensus has been reached
 - If you notice other things that should be changed/updated, ask/suggest
 - If things don't make sense or seem like a bad idea, ask questions or discuss rather than just going along with it
 - Be a good collaborator and help make good decisions, rather than just obeying blindly
