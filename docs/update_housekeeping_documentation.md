@@ -48,6 +48,11 @@ Follow these principles:
 3. **Transitional States** - Document both current and target states during migrations
 4. **Clear Status** - Mark features/approaches as current, deprecated, or planned
 
+### Step 4: Suggest any potentially missing/obsolete documents to the user
+
+(If the user agrees, then add/remove accordingly).
+
+
 #### Common Update Patterns
 
 **Feature Implementation Status**
