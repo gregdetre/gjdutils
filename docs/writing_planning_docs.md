@@ -23,6 +23,8 @@ Planning docs should follow this naming format: `yyMMdd[letter]_description_in_n
   - Exception: Keep proper capitalisation for acronyms like `ToC` (Table of Contents)
   - Example: `250526a_ToC_hierarchical_summary_tooltips.md`
 
+Use a subagent to choose the filename.
+
 Update this doc regularly to keep the actions up-to-date. When you change it, make minimal, focused changes, based on new user input.
 
 
