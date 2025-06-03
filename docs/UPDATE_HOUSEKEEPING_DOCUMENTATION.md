@@ -5,8 +5,8 @@ This document describes the process for keeping project documentation up-to-date
 ## See also
 
 - `docs/DOCUMENTATION_ORGANISATION.md`
-- `docs/WRITING_EVERGREEN_DOCS.md` - Guidelines for writing evergreen documentation
-- `docs/WRITING_PLANNING_DOCS.md` - Guidelines for ephemeral planning documents
+- `docs/WRITE_EVERGREEN_DOC.md` - Guidelines for writing evergreen documentation
+- `docs/WRITE_PLANNING_DOC.md` - Guidelines for ephemeral planning documents
 - `docs/GIT_COMMITS.md` - How to commit documentation updates
 
 ## When to Update Documentation

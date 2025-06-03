@@ -12,7 +12,7 @@ My workflow for starting a new epic is usually something like:
 
 -  If there's a new software library or specialist topic involved, I might say `"Follow instructions in @WRITE_DEEP_DIVE_AS_DOC.md for topic X`. That way, I'll have a new `docs/SOFTWARE_LIBRARY_X.md` that we can continually refer back to, containing up-to-date snippets and best practices from the web.
 
-- `Create a new planning doc for this, following instructions in @WRITE_PLANNING_DOCS.md`. Read that, check I'm happy with it, discuss/manually edit as needed. This is the key step. Because it has all the context from the deep dive and our conversation, the planning document is usually pretty rich.
+- `Create a new planning doc for this, following instructions in @WRITE_PLANNING_DOC.md`. Read that, check I'm happy with it, discuss/manually edit as needed. This is the key step. Because it has all the context from the deep dive and our conversation, the planning document is usually pretty rich.
 
 - I occasionally `Run @CRITIQUE_OF_PLANNING_DOC.md` in Cursor with o3, and then feed that critique back to Claude to see if it wants to update its plan. (In practice, I mostly just rely on Claude, and only rope in o3 if we're doing something really tricky, or if we get struck.)
 

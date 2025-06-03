@@ -8,4 +8,4 @@ e.g.
 
 - Do X, following `coding_principles.md`. Be in `sounding_board_mode.md`. See also `testing_python.md`
 
-- Write a planning doc for X, following `writing_planning_docs.md`.
+- Write a planning doc for X, following `WRITE_PLANNING_DOC.md`.

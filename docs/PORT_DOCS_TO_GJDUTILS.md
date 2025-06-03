@@ -7,7 +7,7 @@ Every so often I would like to take a look at `docs/*.md`, and examine whether t
 I am actively improving & adding to `docs/` as I develop my project, and so I would like to occasionally update `gjdutils/docs/` to include these improvements. The tricky part is that while some of the docs in this project's `docs/` are generic and could be of widespread utility (copied, perhaps with light modification), some of the docs in this project's `docs/` are specific to this project, and it wouldn't make sense to include them in `gjdutils/docs/`.
 
 Use a subagent to gather information & compare what's in both `docs` folders, and then make a proposal for:
-- Docs that exist in both that we should compare, and see if there are any improvements from one to port/update in the other (probably from `docs` -> `gjdutils/docs`, but perhaps occasionally vice versa), e.g.example `docs/WRITE_PLANNING_DOCS.md` also exists as an older version as `gjdutils/docs/WRITE_PLANNING_DOCS.md`.
+- Docs that exist in both that we should compare, and see if there are any improvements from one to port/update in the other (probably from `docs` -> `gjdutils/docs`, but perhaps occasionally vice versa), e.g.example `docs/WRITE_PLANNING_DOC.md` also exists as an older version as `gjdutils/docs/WRITE_PLANNING_DOC.md`.
 - Docs that only exist in `docs/` and should be added to `gjdutils/docs` (or perhaps even vice versa).
 - Docs that should be renamed in `gjdutils/docs` (because there's a better name in `docs/`).
 - Docs that should be removed (though probably there should be a good reason for this, e.g. there are duplicates, or we agree the doc is bad/out of date in some clear way).

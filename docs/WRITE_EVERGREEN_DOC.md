@@ -1,7 +1,7 @@
 # Writing evergreen documentation
 
 see also: 
-- `docs/WRITING_PLANNING_DOCS.md` - for writing ephemeral decision/planning docs
+- `docs/WRITE_PLANNING_DOC.md` - for writing ephemeral decision/planning docs
 - `docs/UPDATE_HOUSEKEEPING_DOCUMENTATION.md` - for keeping documentation current every so often
 
 
@@ -33,7 +33,7 @@ They might be organised into something like the following sections. Use your jud
 Bullet-point list of other relevant docs, code, urls, or other resources that provide related information, or more detail. Provide a 1-sentence summary or explanation of how each one is relevant. 
 
 Examples of good cross-references:
-- `docs/WRITING_PLANNING_DOCS.md` - for information about writing ephemeral decision/planning docs
+- `docs/WRITE_PLANNING_DOC.md` - for information about writing ephemeral decision/planning docs
 - `components/blah.tsx` - implementation of blah features described here
 - `planning/250526a_blah_detailed_planning.md` - historical decision context on the project to build that feature
 

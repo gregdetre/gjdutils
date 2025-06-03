@@ -6,7 +6,7 @@ Aim to keep these concise, but emphasise & clearly capture all the decisions, re
 
 If you're starting the doc from scratch, store it in `planning/`, and first ask the user questions about their project requirements to clarify key decisions. (Use MCP or run `date +"%y%m%d"` command first to get the current date for naming the file)
 
-see also: `docs/WRITING_EVERGREEN_DOCS.md` for instructions on writing evergreen docs
+see also: `docs/WRITE_EVERGREEN_DOC.md` for instructions on writing evergreen docs
 
 
 ## File naming conventions
