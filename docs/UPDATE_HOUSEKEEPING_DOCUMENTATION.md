@@ -4,6 +4,7 @@ This document describes the process for keeping project documentation up-to-date
 
 ## See also
 
+- `docs/DOCUMENTATION_ORGANISATION.md`
 - `docs/WRITING_EVERGREEN_DOCS.md` - Guidelines for writing evergreen documentation
 - `docs/WRITING_PLANNING_DOCS.md` - Guidelines for ephemeral planning documents
 - `docs/GIT_COMMITS.md` - How to commit documentation updates
@@ -28,7 +29,7 @@ Read all key documentation to understand the current state:
 4. Key code files and API routes
 5. Configuration files and migrations
 
-Use subagents where appropriate to maintain context efficiency.
+Use subagents where appropriate to maintain context window efficiency.
 
 ### Step 2: Identify Outdated Content
 
@@ -52,6 +53,12 @@ Follow these principles:
 
 (If the user agrees, then add/remove accordingly).
 
+### Step 5: Update project configuration documentation if needed
+
+Consider whether changes affect essential project configuration or AI agent context:
+- New build commands or debugging tools
+- Architectural changes affecting project structure
+- New documentation requiring signposts
 
 #### Common Update Patterns
 
@@ -59,34 +66,34 @@ Follow these principles:
 ```markdown
 # Before
 **Missing Features**
-- AI integration not yet implemented
-- Summaries not built
+- API integration not yet implemented
+- Data processing not built
 
 # After  
 **Implemented Features**
-- AI integration with Claude Sonnet 4 ✓
-- Hierarchical summaries with hover tooltips ✓
+- API integration with external service ✓
+- Data processing with advanced filtering ✓
 
 **Planned Features**
-- Document upload functionality
-- User authentication
+- File upload functionality
+- User management
 ```
 
 **Architectural Changes**
 ```markdown
 # Add transitional documentation
-**Current State**: Code uses decomposed element storage
-**Target State**: Single-row document storage (see ARCHITECTURE.md)
+**Current State**: Code uses component-based architecture
+**Target State**: Modular service architecture (see ARCHITECTURE.md)
 **Migration Status**: Schema exists, code needs updating
 ```
 
 **Cross-References**
 ```markdown
-# Instead of duplicating prompt template info
-see `docs/LLM_PROMPT_TEMPLATES.md` for prompt template architecture
+# Instead of duplicating configuration info
+see `docs/CONFIGURATION.md` for configuration architecture
 ```
 
-### Step 5: Review and suggest a commit
+### Step 6: Suggest a commit to the user (following `docs/GIT_COMMITS.md`)
 
 1. **Self-Review** - Re-read all changes for consistency
 2. **Test Links** - Verify cross-references work
@@ -97,10 +104,10 @@ Example commit message:
 ```
 docs: update documentation to reflect current implementation
 
-- Update PROJECT_STATUS.md with implemented AI features
-- Reflect database architecture transition in database docs
-- Add cross-references to LLM_PROMPT_TEMPLATES.md
-- Update TABLE_OF_CONTENTS_PANE.md with tabs and tooltips
+- Update PROJECT_STATUS.md with implemented features
+- Reflect architecture transition in relevant docs
+- Add cross-references between related documentation
+- Update component documentation with current functionality
 ```
 
 ## Documentation Quality Checklist
