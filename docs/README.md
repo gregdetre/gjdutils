@@ -1,4 +1,4 @@
-Some of these docs were written with Claude Code in mind, e.g. they references `tasks` and `subagents`.
+Some of these docs were written with Claude Code in mind, e.g. they reference `tasks` and `subagents`.
 
 But for the most part they should work fairly well in other contexts (e.g. Cursor).
 
