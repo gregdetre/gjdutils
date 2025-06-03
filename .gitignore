@@ -120,3 +120,5 @@ dmypy.json
 .pypirc
 
 mcp.json
+
+.claude/settings.local.json
