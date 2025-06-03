@@ -18,7 +18,7 @@ My workflow for starting a new epic is usually something like:
 
 - `/compact` - this is a Claude Code command that clears the context window, adding a nice summary of what has been discussed before
 
-- `/model sonnet` - I might switch over to Sonnet if I think the implementation part is straightforward. (With the more expensive [Anthropic Max Plan][https://www.anthropic.com/news/max-plan], I hit the rate limits for Opus sometimes).
+- `/model sonnet` - I might switch over to Sonnet if I think the implementation part is straightforward. (With the more expensive [Anthropic Max Plan](https://www.anthropic.com/news/max-plan), I hit the rate limits for Opus sometimes).
 
 - `Run @DO_PLANNING_DOC.md for [planning doc]`. Make a cup of tea. I have the Claude permissions mostly in YOLO mode, but it can't commit. The model will do a single stage (with lots of sub-actions), and then stop.
 
