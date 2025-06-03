@@ -30,4 +30,4 @@ My workflow for starting a new epic is usually something like:
   
   - Run `UPDATE_HOUSEKEEPING_DOCUMENTATION.md`.
   
-  - Run `UPDATE_CLAUDE_INSTRUCTIONS.md`. It's critical that `CLAUDE.md` (or some equivalent Cursor rules) includes important stuff, e.g. a summary of `CODING_PRINCIPLES.md`, `CODING_GUIDELINES.md`, `DOCUMENTATION_ORGANISATION.md`). Then the prompts can be very short, and you can trust that the agent will find the right bit of the code reliably and without wasting too much context.
+  - Run `UPDATE_CLAUDE_INSTRUCTIONS.md`. I think it's probably important that `CLAUDE.md` (or some equivalent Cursor rules) includes important stuff, e.g. a summary of `CODING_PRINCIPLES.md`, `CODING_GUIDELINES.md`, `DOCUMENTATION_ORGANISATION.md`). Then the prompts can be very short, and you can trust that the agent will find the right bit of the code reliably and without wasting too much context.
