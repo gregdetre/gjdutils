@@ -1,8 +1,10 @@
-# gjdutils
+# gjdutils Python Utilities
 
-A collection of useful utility functions (strings, dates, data science/AI, web development, types, etc).
+A production-ready collection of Python utilities for common development tasks, part of the [gjdutils project](../../README.md).
 
-This is a smorgasbord of utility functions, patterns and convenient wrappers that I've found myself rewriting and reusing across multiple projects, gathered into one place.
+This is a smorgasbord of utility functions, patterns and convenient wrappers that I've found myself rewriting and reusing across multiple projects. These utilities are designed to work well with AI-assisted development workflows.
+
+For AI-assisted programming templates and workflows, see [docs/](../../docs/README.md).
 
 Probably many of these exist elsewhere in libraries - if so, please let me know, because I'd probably rather use something cleaner and better-maintained.
 
