@@ -16,7 +16,7 @@ Coding & infrastructure:
 - `../instructions/CODING_PRINCIPLES.md` - Outlines development principles prioritising simplicity, readability, debugging, and rapid prototyping for early-stage development
 - `CODING_SHELL_SCRIPTS.md` - Guidelines for writing shell scripts and command-line utilities
 - `TESTING_PYTHON.md` - Testing approach documentation covering Python test framework setup, test structure, and coverage
-- `RESEARCH_POTENTIAL_LIBRARY_CHANGES_GOTCHAS.md` - Guide for researching and evaluating new libraries and dependencies
+
 
 Docs, modes, and admin:
 - `../instructions/GIT_COMMITS.md` - Guidelines for Git commit best practices including batching changes, message format, and handling concurrent changes
@@ -27,7 +27,7 @@ Docs, modes, and admin:
 - `../instructions/WRITE_PLANNING_DOC.md` - Guide for writing planning/project management documents with file naming conventions, structure, and stage-based action plans
 - `../instructions/UPDATE_HOUSEKEEPING_DOCUMENTATION.md` - Process for keeping project documentation up-to-date including review steps, update patterns, and quality checklist
 - `../instructions/DEBRIEF_PROGRESS.md` - Process for reviewing and documenting project progress and decisions
-
+- `../instructions/RESEARCH_POTENTIAL_LIBRARY_CHANGES_GOTCHAS.md` - Guide for researching and evaluating new libraries and dependencies
 
 ## Planning docs
 
