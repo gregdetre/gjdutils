@@ -4,8 +4,11 @@ This document describes the process for keeping project documentation up-to-date
 
 ## See also
 
+- Documentation organisation guide (if available) - Comprehensive guide to all project documentation organisation and navigation
+- `UPDATE_DOCUMENTATION_ORGANISATION_DOC.md` - Run after this process to update documentation organisation guide (if available)
 - `WRITE_EVERGREEN_DOC.md` - Guidelines for writing evergreen documentation
 - `WRITE_PLANNING_DOC.md` - Guidelines for ephemeral planning documents
+- AI instruction maintenance guide (if available, e.g. `TEMPLATE_FOR_CLAUDE_RULES.md` for `CLAUDE.md`) - Maintaining AI agent context as part of housekeeping
 - `GIT_COMMITS.md` - How to commit documentation updates
 
 ## When to Update Documentation
@@ -29,17 +32,19 @@ Read all key documentation to understand the current state:
 5. Key code files and API routes
 6. Configuration files and migrations
 
-Use subagents where appropriate to maintain context window efficiency.
+Use parallel AI assistants where appropriate to maintain context window efficiency.
 
 ### Step 2: Identify potential improvements
 
 Look for:
 - **Feature Status Mismatches** - Documentation says "not implemented" but code exists
 - **Architectural Drift** - Documentation describes old approaches superseded by new decisions
+- **Missing High-level Docs** - Missing high-level/overview evergreen/reference documentation, e.g. README, SETUP, ARCHITECTURE, PRODUCT VISION, CODING_PRINCIPLES/GUIDELINES, PROJECT_STRUCTURE, TESTING, UI_INTERFACE and/or STYLING/DESIGN, etc. These are just examples - use your judgment about which high-level docs would be most relevant to this particular codebase.
 - **Missing Features** - New functionality not documented
 - **Broken Cross-References** - Links to renamed/removed files
 - **Duplicate Information** - Same content in multiple places (consolidate to one location)
 - **Incomplete Sections** - Placeholder or stub documentation
+- **Unclear Filenames** - Documentation files with ambiguous or overly brief names that don't clearly indicate content
 - **Not that useful** - Information that isn't very relevant or adding much. Either remove or make it more concise
 - **No longer useful** - Information that may have been useful in the past, but is out-of-date or no longer so useful. Either remove, make it more concise, or move into an Appendix as a historical record (if you think it still has some value as background)
 
@@ -55,9 +60,9 @@ Discuss proposed changes to the user, usually grouped by priority (most importan
 
 Agree a plan with the user, and execute it, defaulting to highest-priority first.
 
-- Use tasks and subagents (provided with rich context to make sure they make correct/useful/sensible/aligned changes).
+- Use tasks and parallel AI assistance (provided with rich context to make sure they make correct/useful/sensible/aligned changes).
 
-- Commit in batches (following `GIT_COMMITS.md`), using subagents.
+- Commit in batches (following `GIT_COMMIT_CHANGES.md`), using parallel AI assistants if available.
 
 
 ### Step 4: Review
@@ -65,12 +70,16 @@ Agree a plan with the user, and execute it, defaulting to highest-priority first
 Review where we are, and consider whether there's anything remaining, or any other gaps/improvements we're now noticing.
 
 
-### Step 5: Update project configuration documentation if needed
+### Step 5: Late-stage housekeeping steps
 
-Consider whether changes affect essential project configuration or AI agent context:
-- New build commands or debugging tools
-- Architectural changes affecting project structure
-- New documentation requiring signposts
+After completing the main documentation updates:
+
+1. **Update documentation organisation guide**: If your project has a documentation organisation guide, update it to ensure it reflects any structural changes made during housekeeping.
+
+2. **Update AI agent context if needed**: If your project has AI instruction files (e.g. `CLAUDE.md`), consider whether changes affect essential AI agent context:
+   - New build commands or debugging tools
+   - Architectural changes affecting project structure
+   - New documentation requiring signposts
 
 #### Common Update Patterns
 
@@ -105,11 +114,20 @@ Consider whether changes affect essential project configuration or AI agent cont
 see `../reference/CONFIGURATION.md` for configuration architecture
 ```
 
-### Step 6: Update documentation organisation guide
+**Filename Clarification**
+```markdown
+# Before
+MUTATIONS.md
+SETUP.md
+API_UTILS.md
 
-If your project has a documentation organisation guide, update it to ensure it reflects any structural changes made during housekeeping.
+# After (with git mv)
+MUTATIONS_DOCUMENT_CONTENT_TRANSFORMS.md
+SETUP_DEVELOPMENT_ENVIRONMENT.md
+API_STRING_REPLACEMENT_UTILITIES.md
+```
 
-### Step 7: Suggest a commit to the user (following `GIT_COMMITS.md`)
+### Step 6: Suggest a commit to the user (following `GIT_COMMITS.md`)
 
 
 ## Documentation Quality Checklist
@@ -122,7 +140,7 @@ Before committing, ensure:
 - [ ] "See also" sections are comprehensive
 - [ ] Examples match current code patterns
 - [ ] Technical details are accurate
-- [ ] Documentation organisation guide (if it exists) reflects any structural changes
+- [ ] Documentation organisation guide (if available) reflects any structural changes
 
 ## Common Pitfalls
 

@@ -18,6 +18,22 @@ They should refer to one another, and avoid too much overlap in content, so that
 
 They should be written in Markdown, stored as `../reference/TOPIC_NAME.md` for reference documentation or `TOPIC_NAME.md` for instructional content.
 
+## Filename Guidelines
+
+Choose descriptive filenames that clearly indicate the document's content:
+
+- **Be specific**: `UPLOAD_DOCUMENT_PROCESSING_PIPELINE.md` instead of just `UPLOAD.md`
+- **Include context**: `NAVIGATION_COMPONENT_DESIGN.md` instead of just `NAVIGATION.md`
+- **Keep existing names**: Where possible, include the current name as a prefix (e.g., `SETUP_DEVELOPMENT_ENVIRONMENT.md` keeps `SETUP`)
+- **Group related docs**: Use similar prefixes so related docs sort together (e.g., all `DATABASE_*.md` files)
+- **Maintain prefix conventions**: Keep category prefixes (DATABASE_, TESTING_, API_, etc.)
+
+Good examples:
+- `DATABASE_INTEGRATION_REFERENCE.md`
+- `TESTING_AUTOMATION_OVERVIEW.md`
+- `API_CLIENT_INTEGRATION.md`
+- `AUTHENTICATION_SECURITY.md`
+
 
 ## Document structure
 
@@ -47,6 +63,8 @@ Add references to and from this new doc (e.g. in relevant code, planning docs in
 - **Provide 1-sentence context** with each link explaining its relevance
 - **Use relative paths** for internal documentation links
 - **Avoid content duplication** - if information exists elsewhere, link to it
+
+Add references to and from this new doc (e.g. in relevant code, planning docs, etc) - use parallel AI assistance for this
 
 
 ### Principles, key decisions

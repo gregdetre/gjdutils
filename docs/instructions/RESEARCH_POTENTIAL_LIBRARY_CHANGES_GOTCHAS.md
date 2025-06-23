@@ -33,19 +33,31 @@ Review the codebase for:
 - **Areas lacking sufficient comments** where context would prevent mistakes
 - **Potential maintenance hazards** or brittle implementations
 
-### Phase 4: Prioritised Recommendations
+### Phase 4: Ask User to Clarify Requirements
+Ask the user questions if you need to, based on what you've found so far, to suggest further actions, and to shape the recommendations that you provide.
+
+Following the user's response, do any final research needed, so that recommendations can be very concrete.
+
+### Phase 5: Prioritised Recommendations
+Wait until you've received responses to your questions before starting to generate recommendations in a planning doc.
+
 Generate actionable recommendations balancing:
-- **Risk assessment** of identified issues
-- **Impact on new developers** joining the codebase
+- **Priority/risk assessment** of identified issues. Don't be hyperbolic, e.g. don't label something 'Critical' unless it truly is. Don't sweat the small stuff.
+- **Likelihood that there will be a problem in this area, and that this documentation would help**
 - **Documentation burden** vs. benefit (avoiding over-documentation)
-- **Immediate vs. future concerns**
+
+Example recommendations (though these are just examples - use your judgment about what's valuable/relevant for the project you're working on):
+- Write a deep dive doc on a particular library, emphasising how the API for it has changed in the new version
+- Update the deployment script or instructions to avoid a particular gotcha
+- Update the instructions for running migrations to ban potentially destructive actions (e.g. dropping all tables)
+- Create a doc for adding features of a particular type, that references relevant docs/code, provides examples/snippets/patterns
 
 ## Execution Strategy
 
-### Task Management and Subagents
-Follow instructions in `instructions/TASKS_SUBAGENTS.md`. It'll be necessary to make heavy but careful use of subagents in order to avoid filling up the context window.
+### Task Management and Parallel AI Assistance
+Follow instructions in `instructions/TASKS_SUBAGENTS.md` if available. It'll be necessary to make heavy but careful use of parallel AI assistance in order to avoid filling up the context window.
 
-When delegating to subagents, provide:
+When delegating to parallel AI assistance, provide:
 - **Clear scope and objectives** for their specific research area
 - **Current date context** for timeline-sensitive research
 - **References to relevant documentation** they should consult
@@ -53,7 +65,7 @@ When delegating to subagents, provide:
 - **Format expectations** for their findings
 - **Decision-making authority** and escalation criteria
 
-Tell subagents to output detailed enough evidence/logging that you can retrace their steps (e.g. which URLs or parts of the code their output is based on). Coordinate the findings from subagents into coherent recommendations.
+Tell parallel AI assistants to output detailed enough evidence/logging that you can retrace their steps (e.g. which URLs or parts of the code their output is based on). Coordinate the findings from parallel AI assistants into coherent recommendations.
 
 ### Focus Areas by Technology Stack
 
