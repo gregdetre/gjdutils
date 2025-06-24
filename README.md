@@ -1,6 +1,6 @@
 # gjdutils
 
-A comprehensive toolkit for highly effective AI-assisted programming, containing two complementary resource sets:
+A comprehensive toolkit for highly effective AI-assisted programming, containing three complementary resource sets:
 
 ## 🤖 AI-Assisted Programming Templates
 
@@ -28,12 +28,26 @@ A curated collection of Python utilities for common development tasks including:
 
 **Quick start**: `pip install gjdutils` (see [src/gjdutils/README.md](src/gjdutils/README.md))
 
+## ⚒️ TypeScript Utilities
+
+**[src/ts/](src/ts/)** - Cross-platform TypeScript tools and CLI utilities
+
+A collection of battle-tested TypeScript utilities ported from real-world development workflows:
+
+- **CLI tools** for date generation, conversation extraction, and code analysis
+- **Git worktree sync** scripts for managing parallel development branches
+- **LLM critique tools** for automated planning document review
+- **Development utilities** like line counting and file processing
+
+**Quick start**: See [src/ts/README.md](src/ts/README.md) for installation and usage examples
+
 ## Why gjdutils?
 
-Both components are designed around the principle of **making AI-assisted development more effective**:
+All components are designed around the principle of **making AI-assisted development more effective**:
 
 - The **templates** provide the structure and process for working with AI assistants
-- The **utilities** handle common tasks so you can focus on the interesting problems
+- The **Python utilities** handle data science and LLM integration tasks
+- The **TypeScript utilities** provide cross-platform development workflow tools
 
 Whether you're building prototypes or production systems, gjdutils helps you work faster and more reliably with AI assistance.
 

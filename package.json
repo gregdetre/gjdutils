@@ -1,0 +1,39 @@
+{
+  "name": "gjdutils-ts",
+  "version": "1.0.0",
+  "description": "TypeScript utilities for gjdutils - general-purpose scripts and CLI tools",
+  "main": "dist/ts/index.js",
+  "types": "dist/ts/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist/ts"
+  },
+  "keywords": [
+    "utilities",
+    "cli",
+    "typescript",
+    "development-tools",
+    "git-worktrees",
+    "llm-tools"
+  ],
+  "author": "Greg Detre",
+  "license": "MIT",
+  "dependencies": {
+    "clipanion": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "bin": {
+    "sequential-datetime-prefix": "./dist/ts/cli/sequential-datetime-prefix.js",
+    "extract-llm-conversation": "./dist/ts/cli/extract-llm-conversation.js",
+    "llm-critique-planning-docs": "./dist/ts/critique/llm-critique-planning-docs.js",
+    "parse-llm-output": "./dist/ts/critique/parse-llm-output.js",
+    "count-lines": "./dist/ts/scripts/count-lines.js",
+    "git-worktree-sync": "./dist/ts/scripts/git-worktree-sync.js",
+    "git-worktree-sync-all": "./dist/ts/scripts/git-worktree-sync-all.js"
+  }
+}

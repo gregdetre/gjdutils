@@ -26,5 +26,6 @@ gjdutils-specific reference documentation:
 This is part of the [gjdutils project](../README.md) - a collection of:
 1. AI-assisted programming workflows (this documentation)
 2. Python utilities and scripts ([src/gjdutils/](../src/gjdutils/))
+3. TypeScript CLI tools and development utilities ([src/ts/](../src/ts/))
 
 These templates have been battle-tested in real development projects and are designed to work with both Claude Code and Cursor.
