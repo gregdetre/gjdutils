@@ -87,16 +87,45 @@ Before updating agent instructions:
 ## Tool-Specific Considerations
 
 ### Claude Code (CLAUDE.md)
-- Include tasks and subagents guidance
-- Reference specific tools and permissions
-- Include context window management tips
+- Include tasks and subagents guidance for context window management
+- Reference specific tools and permissions needed
+- Include parallel tool execution patterns
+- Document debugging workflows for command-line environments
 
 ### Cursor (.cursorrules)
-- Include workspace configuration hints
-- Reference model selection best practices
-- Include shortcuts and workflow patterns
+- Include workspace configuration hints where relevant
+- Reference model selection best practices if applicable
+- Include shortcuts and workflow patterns for IDE users
+- Consider IDE-specific debugging approaches
 
 ### Other AI Tools
-- Adapt structure to tool capabilities
+- Adapt structure to tool capabilities and limitations
 - Include tool-specific workflow patterns
-- Reference appropriate documentation formats
+- Reference appropriate documentation formats for the platform
+- Consider different context window constraints
+
+## Customization Guidelines
+
+When maintaining CLAUDE.md:
+
+1. **Keep project-specific** - Tailor content to actual codebase needs
+2. **Remove inapplicable sections** - Don't include generic content that doesn't apply
+3. **Add project-specific sections** as needed (API keys, special workflows, domain knowledge)
+4. **Maintain conciseness** - File should be scannable, not comprehensive
+5. **Use signposting approach** - Point to detailed docs rather than duplicating content
+6. **Update regularly** - Keep build commands and key information current
+
+## Essential References Structure
+
+When organizing the "See also" section in CLAUDE.md, consider this structure:
+
+```markdown
+see:
+- `README.md` for project goals and features
+- `docs/reference/CODING_PRINCIPLES.md` for development principles
+- `docs/instructions/GIT_COMMIT_CHANGES.md` for Git workflow
+- `docs/reference/ARCHITECTURE_OVERVIEW.md` for system architecture
+- `docs/reference/[DOMAIN]_*.md` for specific domain documentation
+```
+
+This provides a logical hierarchy from general (README) to specific (domain docs).
