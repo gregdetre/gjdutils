@@ -13,7 +13,7 @@ from gjdutils.strings import jinja_render
 MODEL_TYPE = Literal["openai", "claude"]
 
 
-def extract_json_from_markdown(text: str, verbose: bool = False) -> str:
+def extract_json_from_markdown(text: str, verbose: int = 0) -> str:
     """
     Extracts JSON content from text that may be wrapped in markdown code blocks.
 
@@ -27,7 +27,7 @@ def extract_json_from_markdown(text: str, verbose: bool = False) -> str:
     # If it's already valid JSON, return as is
     try:
         json.loads(text)
-        if verbose:
+        if verbose >= 2:
             print("Input is already valid JSON")
         return text
     except json.JSONDecodeError:
@@ -36,7 +36,7 @@ def extract_json_from_markdown(text: str, verbose: bool = False) -> str:
 
     # Handle JSON wrapped in markdown code blocks
     if text.strip().startswith("```") and "```" in text:
-        if verbose:
+        if verbose >= 2:
             print("Detected markdown code block")
 
         # Extract content between backticks
@@ -54,7 +54,7 @@ def extract_json_from_markdown(text: str, verbose: bool = False) -> str:
             if "```" in extracted:
                 extracted = extracted.split("```", 1)[0].strip()
 
-            if verbose:
+            if verbose >= 2:
                 print(f"Extracted content from markdown: {extracted[:50]}...")
 
             return extracted
