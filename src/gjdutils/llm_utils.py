@@ -1,13 +1,13 @@
-from typing import Any, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union, TYPE_CHECKING
 from pathlib import Path
 import json
 
-from anthropic import Anthropic
-from openai import OpenAI
-
 from gjdutils.llms_claude import call_claude_gpt
-from gjdutils.llms_openai import call_openai_gpt
 from gjdutils.strings import jinja_render
+
+if TYPE_CHECKING:  # for type hints only; avoids runtime imports
+    from anthropic import Anthropic
+    from openai import OpenAI
 
 
 MODEL_TYPE = Literal["openai", "claude"]
@@ -64,7 +64,7 @@ def extract_json_from_markdown(text: str, verbose: int = 0) -> str:
 
 
 def generate_gpt_from_template(
-    client: Anthropic | OpenAI,
+    client: "Anthropic | OpenAI",  # type: ignore[name-defined]
     prompt_template: Union[str, Path],
     context_d: dict,
     response_json: bool,
@@ -96,7 +96,9 @@ def generate_gpt_from_template(
 
     prompt = jinja_render(template_content, context_d)
     if model_type == "openai":
-        assert isinstance(client, OpenAI), "Expected OpenAI client"
+        # Lazy import to avoid requiring OpenAI when only using Anthropic
+        from gjdutils.llms_openai import call_openai_gpt
+
         out, _, extra = call_openai_gpt(
             prompt,
             client=client,
@@ -105,7 +107,6 @@ def generate_gpt_from_template(
             max_tokens=max_tokens,
         )
     else:
-        assert isinstance(client, Anthropic), "Expected Anthropic client"
         out, extra = call_claude_gpt(
             prompt,
             client=client,
