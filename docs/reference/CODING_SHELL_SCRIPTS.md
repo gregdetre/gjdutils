@@ -3,7 +3,7 @@
 ## General Principles
 
 - Keep things simple and readable
-- Prefer Python scripts over shell scripts
+- Prefer Python scripts over shell for longer scripts
 - Keep scripts minimal, concise, and focused on a single task
 - Break long main functions into sub-functions to make it easy to follow the logic
 - Prefer to show the full tracebacks & error messages, to give the user full information. Minimise try/except. 

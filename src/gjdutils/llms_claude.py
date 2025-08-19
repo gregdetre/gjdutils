@@ -114,18 +114,15 @@ def call_claude_gpt(
 
     msg = response.content[0].text  # type: ignore
     if response_json:
-        # print("Processing JSON response from Claude...")
         try:
-            # print(f"Raw Claude response before JSON parsing: {msg}")
-
             # Use our utility function to handle markdown-wrapped JSON
-            clean_json_text = extract_json_from_markdown(msg, verbose=True)
-
+            clean_json_text = extract_json_from_markdown(msg, verbose=verbose)
             msg = json.loads(clean_json_text)
         except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}")
-            print(f"Raw message causing error: {msg}")
-            print(f"Cleaned: {clean_json_text}")
+            if verbose:
+                print(f"JSON decode error: {e}")
+                print(f"Raw message causing error: {msg}")
+                print(f"Cleaned: {clean_json_text}")
             # Return a structured error response instead of failing
             msg = {
                 "error": "Failed to parse API response",
