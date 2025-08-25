@@ -113,6 +113,7 @@ def jinja_render(
     filesystem_loader: Optional[PathOrStr] = None,
     check_surplus_context: bool = True,
     strip=True,
+    env=None,
 ):
     """
     Render a Jinja template with the given dictionary, e.g.
@@ -120,11 +121,24 @@ def jinja_render(
         jinja_render("{{name}} is {{age}} years old", {'name': 'Bob', 'age': 42}) -> "Bob is 42 years old"
 
     Will raise an error if CONTEXT is missing any variables.
+
+    Performance note:
+    - For single, ad-hoc renders, passing a template string is fine.
+    - For many renders (e.g., site generation), pass a prebuilt Jinja Environment
+      via the ``env`` parameter. The environment should be constructed once with a
+      FileSystemLoader (and optionally a bytecode cache) to avoid repeatedly
+      re-parsing templates. If ``env`` is provided, it will be used as-is and
+      ``filesystem_loader`` will be ignored.
     """
     from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-    loader = None if filesystem_loader is None else FileSystemLoader(filesystem_loader)
-    env = Environment(loader=loader, undefined=StrictUndefined)
+    # Prefer a caller-provided Environment to avoid repeated setup/compilation
+    if env is None:
+        loader = (
+            None if filesystem_loader is None else FileSystemLoader(filesystem_loader)
+        )
+        env = Environment(loader=loader, undefined=StrictUndefined)
+
     template = env.from_string(prompt_template)
     rendered = template.render(context)
     if strip:
