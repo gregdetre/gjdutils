@@ -121,4 +121,5 @@ dmypy.json
 
 mcp.json
 
+# Claude Code local settings
 .claude/settings.local.json

@@ -19,12 +19,25 @@ def check_git_clean():
     retcode, stdout, _ = run_cmd("git diff --cached --quiet", check=False)
     if retcode != 0:
         _, diff_output, _ = run_cmd("git --no-pager diff --cached --stat")
-        fatal_error_msg("Uncommitted staged changes present:\n" + diff_output)
+        # fatal_error_msg("Uncommitted staged changes present:\n" + diff_output)
+        if (
+            input(
+                f"\n{diff_output}\n\nAre you sure you want to deploy with staged but uncommited files? (y/N): "
+            ).lower()
+            != "y"
+        ):
+            fatal_error_msg("Deployment cancelled by user because of untracked files")
 
     # Check for untracked files
     _, untracked, _ = run_cmd("git ls-files --others --exclude-standard")
     if untracked.strip():
-        fatal_error_msg(f"Untracked files present:\n{untracked}")
+        if (
+            input(
+                f"\nAre you sure you want to deploy with untracked files: {untracked}? (y/N): "
+            ).lower()
+            != "y"
+        ):
+            fatal_error_msg("Deployment cancelled by user because of untracked files")
 
     console.print("[green]Git: clean[/green]")
 
