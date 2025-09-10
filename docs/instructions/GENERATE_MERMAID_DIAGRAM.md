@@ -112,7 +112,7 @@ Likewise, if there's a domain-standard visual-notational scheme that's relevant 
 
 ## Quick Workflow
 
-1. Generate filename prefix: `date +%y%m%d` (add letter suffix if needed) or `npx tsx src/ts/cli/sequential-datetime-prefix.ts`
+1. Generate filename prefix: `npx tsx src/ts/cli/sequential-datetime-prefix.ts docs/diagrams/` if available, otherwise `date +%y%m%d` (add letter suffix if needed)
 2. Create/edit `.mermaid` file with the generated prefix in `docs/diagrams/`
 3. Generate SVG: `npx mmdc -i docs/diagrams/FILENAME.mermaid -o docs/diagrams/FILENAME.svg -w 1400 -H 1600 -s 2 -b transparent`
 4. Open the SVG in default app: `open docs/diagrams/FILENAME.svg` (or `xdg-open` on Linux)

@@ -5,7 +5,7 @@ This is a guide for writing planning/project management `.md` files, e.g. `plann
 Aim to keep these concise, but emphasise & clearly capture all the decisions, responses, and requirements from the user.
 
 If you're starting the doc from scratch:
-- (Use MCP or run `date +"%y%m%d"` command first to get the current date for naming the file)
+- (Use `npx tsx src/ts/cli/sequential-datetime-prefix.ts planning/` if available, otherwise use MCP or run `date +"%y%m%d"` command first to get the current date for naming the file)
 - Store it in `planning/`, and first ask the user questions about their project requirements to clarify key decisions.
 - See `SOUNDING_BOARD_MODE.md`
 

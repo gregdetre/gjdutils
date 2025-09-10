@@ -177,7 +177,7 @@ When capturing research findings:
 ### Naming Convention
 `yyMMdd[letter]_description_in_normal_case.md`
 
-Use `date +"%y%m%d"` to get the current date for the prefix, then add description in lowercase words separated by underscores (except proper names/acronyms).
+Use `npx tsx src/ts/cli/sequential-datetime-prefix.ts docs/conversations/` if available, otherwise use `date +"%y%m%d"` to get the current date for the prefix, then add description in lowercase words separated by underscores (except proper names/acronyms).
 
 Example: `250616a_research_instructions_improvement.md`
 
