@@ -12,9 +12,11 @@ ABOVE ALL, don't do anything that could result in lost work or mess up yet-to-be
 
 ### Batching changes into commits
 - Each commit should represent a small/medium feature, or stage, or cluster of related changes (e.g. tweaking a bunch of docs).
+- But strike a balance, e.g. the code and docs changes for a given feature should be in the same commit.
 - The codebase should (ideally) be in a working state after each commit.
 - Try not to mix unrelated changes.
 - Before making the commit, list all files that will be committed.
+- IMPORTANT If this is being run in a conversation, only commit changes relevant to this conversation.
 
 ### Commit Message Format
 ```
