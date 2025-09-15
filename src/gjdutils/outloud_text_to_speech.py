@@ -1,5 +1,6 @@
 import os
-from typing import Optional
+from typing import Optional, List, Dict, Any
+import requests
 from gjdutils.env import get_env_var
 
 
@@ -190,6 +191,7 @@ def outloud_elevenlabs(
     # speed=None,
     should_play: bool = False,
     verbose: int = 0,
+    voice_settings: Optional[dict[str, Any]] = None,
 ):
     from elevenlabs import play, save
     from elevenlabs.client import ElevenLabs
@@ -204,17 +206,63 @@ def outloud_elevenlabs(
     # if speed is not None:
     #     raise Exception(f"Unknown SPEED '{speed}'")
     if bot_name is None:
-        bot_name = "Charlotte"  # slower
+        bot_name = "Charlotte"  # keep legacy default, resolution may still fail if not in account
+
+    # Resolve provided bot_name (display name or id) to a valid ElevenLabs voice_id
+    def _list_voices(_api_key: str) -> List[Dict]:
+        url = "https://api.elevenlabs.io/v1/voices"
+        headers = {"xi-api-key": _api_key}
+        resp = requests.get(url, headers=headers, timeout=15)
+        # Raise HTTPError for non-2xx to surface debuggable messages upstream
+        resp.raise_for_status()
+        data = resp.json()
+        # Expected shape: {"voices": [{"voice_id": "...", "name": "..."}, ...]}
+        voices = data.get("voices") if isinstance(data, dict) else None
+        if isinstance(voices, list):
+            return voices
+        # Fallback: if API ever returns a bare list
+        return data if isinstance(data, list) else []
+
+    def _resolve_voice_id(_api_key: str, name_or_id: str) -> str:
+        try:
+            voices = _list_voices(_api_key)
+        except Exception as e:
+            # Surface a clean message; callers already log full trace
+            raise ValueError(f"Failed to list ElevenLabs voices: {e}")
+
+        # Exact id match
+        for v in voices:
+            vid = v.get("voice_id") or v.get("id")
+            if isinstance(vid, str) and vid == name_or_id:
+                return vid
+
+        # Case-insensitive name match
+        for v in voices:
+            nm = v.get("name")
+            if isinstance(nm, str) and nm.lower() == name_or_id.lower():
+                return v.get("voice_id") or v.get("id") or nm
+
+        # Not found: build helpful message
+        available_names = sorted([str(v.get("name")) for v in voices if v.get("name")])
+        preview = ", ".join(available_names[:20])
+        raise ValueError(
+            f"Voice name '{name_or_id}' not found in ElevenLabs account; available voices: {preview}"
+        )
+
+    resolved_voice_id = _resolve_voice_id(api_key, bot_name)
 
     client = ElevenLabs(
         api_key=api_key,
     )
-    audio = client.text_to_speech.convert(
-        text=text,
-        voice_id=bot_name,
-        model_id=model,
-        output_format="mp3_44100_128",
-    )
+    convert_kwargs: dict[str, Any] = {
+        "text": text,
+        "voice_id": resolved_voice_id,
+        "model_id": model,
+        "output_format": "mp3_44100_128",
+    }
+    if voice_settings is not None:
+        convert_kwargs["voice_settings"] = voice_settings
+    audio = client.text_to_speech.convert(**convert_kwargs)
     if mp3_filen is not None:
         save(audio, mp3_filen)  # type: ignore
     if should_play:
