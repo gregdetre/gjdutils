@@ -31,8 +31,8 @@ ABOVE ALL, don't do anything that could result in lost work or mess up yet-to-be
 Types: feat, fix, docs, style, refactor, test, chore
 
 ### Handling Concurrent Changes
-Note: there may be other agents changing the code while you work.
-- To minimise interference, chain the unstage/add/commit operations:
+There may be other agents changing the code while you work, and they might have added other files already.
+- IMPORTANT: To minimise interference, ALWAYS chain the reset/add/commit operations (to make sure we unstage first, then stage, then commit, atomically):
   ```bash
   git reset HEAD unwanted-file && git add wanted-file && git commit -m "fix: resolve auth bug"
   ```
@@ -42,7 +42,9 @@ Note: there may be other agents changing the code while you work.
 - If the code is in a partial/broken state, prioritise commits that leave the codebase working
 - If you encounter merge conflicts or ANY unexpected issues, stop and ask the user immediately
 - When in doubt, ask the user before proceeding
-- When adding files with special characters (like brackets or spaces), quote the path: `git add "path/with special chars/file.txt"`
+- **ALWAYS quote file paths** when using git commands to avoid shell expansion issues:
+  - `git add "frontend/src/routes/language/[target_language_code]/+page.svelte"`
+  - This is especially important for SvelteKit routes with brackets: `[param]`
 
 
 ## Parallel AI Assistance

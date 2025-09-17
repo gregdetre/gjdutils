@@ -42,7 +42,10 @@ Don't include a `Date` section at the top since it's implicit from the filename.
 
 ### References
 
-- Mention relevant evergreen docs (in `docs/`), other planning docs (in `planning/`), code files/functions, links, or anything else that could provide context, with a 1-sentence summary for each of what it's about/why it's relevant
+- Mention relevant evergreen docs (in `docs/`), other planning docs (in `planning/`), code files/functions, links, or anything else that could provide context
+- Try and be fairly precise and comprehensive (e.g. the specific files/functions/sections)
+- Provide a brief 1-sentence summary for each of what it's about/why it's relevant
+- Roughly prioritise most important/relevant/useful references at the top, e.g. high-level docs, key functions, etc
 
 
 ### Principles, key decisions
