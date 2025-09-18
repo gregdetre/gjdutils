@@ -20,7 +20,7 @@
  */
 
 import { Cli, Command, Option, UsageError } from 'clipanion';
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { writeFileSync, unlinkSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -80,14 +80,19 @@ class CountLinesCommand extends Command {
 
       // Build cloc command
       const clocArgs = this.buildClocCommand();
-      const command = `cloc ${clocArgs.join(' ')}`;
 
       if (this.verbose) {
-        this.context.stdout.write(`Running: ${command}\n\n`);
+        this.context.stdout.write(`Running: cloc ${clocArgs.map(arg => {
+          // Show how args will be quoted in shell
+          if (arg.includes(' ') || arg.includes('|') || arg.includes('$')) {
+            return `'${arg}'`;
+          }
+          return arg;
+        }).join(' ')}\n\n`);
       }
 
-      // Execute cloc command
-      const result = execSync(command, { encoding: 'utf8' });
+      // Execute cloc command using execFileSync to avoid shell interpretation
+      const result = execFileSync('cloc', clocArgs, { encoding: 'utf8' });
 
       // If excluding tests, also show test-only count
       if (this.excludeTests) {
@@ -208,7 +213,15 @@ class CountLinesCommand extends Command {
 
     // Add user-specified file exclusions
     if (this.excludeFiles) {
-      excludeFilePatterns.push(...this.excludeFiles.split(',').map(p => p.trim()));
+      excludeFilePatterns.push(...this.excludeFiles.split(',').map(p => {
+        // Escape the pattern for regex if needed
+        const trimmed = p.trim();
+        // If it's a simple glob pattern like *.md, convert to regex
+        if (trimmed.startsWith('*')) {
+          return '.*\\' + trimmed.substring(1) + '$';
+        }
+        return trimmed;
+      }));
     }
 
     args.push(`--not-match-f=${excludeFilePatterns.join('|')}`);
@@ -237,8 +250,7 @@ class CountLinesCommand extends Command {
     try {
       // Count source code (already done above)
       const sourceArgs = this.buildClocCommand();
-      const sourceCommand = `cloc ${sourceArgs.join(' ')}`;
-      const sourceResult = execSync(sourceCommand, { encoding: 'utf8' });
+      const sourceResult = execFileSync('cloc', sourceArgs, { encoding: 'utf8' });
       writeFileSync(sourceFile, sourceResult);
 
       // Count tests only
@@ -249,8 +261,7 @@ class CountLinesCommand extends Command {
         '--match-f=.*\\.(test|spec)\\.(ts|tsx|js|jsx)$|jest\\.setup\\.js$|jest\\.config\\.js$',
       ];
 
-      const testCommand = `cloc ${testArgs.join(' ')}`;
-      const testResult = execSync(testCommand, { encoding: 'utf8' });
+      const testResult = execFileSync('cloc', testArgs, { encoding: 'utf8' });
       writeFileSync(testFile, testResult);
       this.context.stdout.write(testResult);
 
