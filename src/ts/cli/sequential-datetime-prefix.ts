@@ -1,167 +1,212 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env -S npx -y -p tsx@^4 tsx
 
 /**
- * Sequential DateTime Prefix Generator
- * 
- * Ported from Spideryarn Reading project to gjdutils as a generic utility.
- * Originally from: scripts/generate-sequential-datetime-prefix.ts
- * 
+ * Sequential DateTime Prefix Generator (zero-dependency CLI)
+ *
  * Generates sequential datetime prefixes in configurable format (default: yyMMdd[x]_)
  * for organizing files chronologically with letter-based sequence indicators.
- * 
+ *
  * This utility scans a directory for existing files matching the date pattern
  * and returns the next available letter in the sequence (a-z).
- * 
+ *
  * Example usage:
  *   sequential-datetime-prefix planning/
  *   sequential-datetime-prefix docs/conversations/ --format "yyyy-MM-dd"
  *   sequential-datetime-prefix . --verbose
- * 
- * Note: This file should be made executable with: chmod +x sequential-datetime-prefix.ts
+ *   sequential-datetime-prefix docs/planning --also docs/planning/finished --also docs/planning/later
+ *   sequential-datetime-prefix docs/planning --format "yyyy-MM-dd" --also docs/planning/finished --also docs/planning/later --verbose
+ *
+ * Note: Make executable with: chmod +x sequential-datetime-prefix.ts
  */
 
-import { Cli, Command, Option, UsageError } from 'clipanion';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 
-class SequentialDatetimePrefixCommand extends Command {
-  static paths = [Command.Default];
-  
-  static usage = Command.Usage({
-    description: 'Generate sequential datetime prefix for file organisation',
-    details: `
-      Generates a datetime prefix with sequential letter suffix for organising files chronologically.
-      Scans the specified folder for existing files and returns the next letter in sequence.
-      
-      The default format is yyMMdd[x]_ where [x] is a sequential letter (a-z).
-      You can customise the date format using the --format option.
-      
-      This tool is useful for:
-      - Planning documents
-      - Conversation transcripts
-      - Any chronologically organised files
-    `,
-    examples: [
-      ['Generate prefix for current directory', 'sequential-datetime-prefix .'],
-      ['Planning folder with default format', 'sequential-datetime-prefix planning/'],
-      ['Custom date format', 'sequential-datetime-prefix docs/ --format "yyyy-MM-dd"'],
-      ['Verbose output', 'sequential-datetime-prefix . --verbose'],
-    ],
-  });
+type ParsedArgs = {
+  folderPath?: string;
+  verbose: boolean;
+  format: string;
+  alsoDirs: string[];
+};
 
-  folderPath = Option.String({ required: true });
-  verbose = Option.Boolean('-v,--verbose', false, {
-    description: 'Show detailed scanning information',
-  });
-  format = Option.String('--format', 'yyMMdd', {
-    description: 'Date format pattern (default: yyMMdd)',
-  });
-
-  async execute(): Promise<number> {
-    try {
-      const targetFolder = resolve(this.folderPath);
-      const datePrefix = this.getCurrentDatePrefix();
-      
-      if (this.verbose) {
-        this.context.stdout.write(`Scanning ${targetFolder} for ${datePrefix}*\n`);
-        this.context.stdout.write(`Using date format: ${this.format}\n`);
-      }
-
-      const files = await readdir(targetFolder).catch(err => {
-        if (err.code === 'ENOENT') {
-          throw new UsageError(`Folder not found: ${targetFolder}`);
+function parseArgs(argv: string[]): ParsedArgs {
+  const parsed: ParsedArgs = { verbose: false, format: 'yyMMdd', alsoDirs: [] };
+  let i = 0;
+  while (i < argv.length) {
+    const token = argv[i];
+    if (token === '-v' || token === '--verbose') {
+      parsed.verbose = true;
+      i += 1;
+      continue;
+    }
+    if (token === '--also' || token.startsWith('--also=')) {
+      let value: string | undefined;
+      if (token.includes('=')) {
+        const [, v] = token.split('=');
+        value = v;
+      } else {
+        value = argv[i + 1];
+        if (!value) {
+          throw new Error("Missing value for --also");
         }
-        throw err;
-      });
-
-      const pattern = new RegExp(`^${this.escapeRegExp(datePrefix)}([a-z])_`);
-      const usedLetters = new Set(
-        files
-          .map(file => file.match(pattern)?.[1])
-          .filter(Boolean)
-      );
-
-      if (this.verbose && usedLetters.size > 0) {
-        this.context.stdout.write(`Found existing prefixes: ${Array.from(usedLetters).sort().join(', ')}\n`);
+        i += 1; // consume value below via common increment
       }
-
-      const nextLetter = 'abcdefghijklmnopqrstuvwxyz'
-        .split('')
-        .find(letter => !usedLetters.has(letter)) || 'a';
-
-      const result = `${datePrefix}${nextLetter}_`;
-      this.context.stdout.write(`${result}\n`);
-      
-      if (this.verbose) {
-        this.context.stdout.write(`\nNext available prefix: ${result}\n`);
+      parsed.alsoDirs.push(value);
+      i += 1;
+      continue;
+    }
+    if (token.startsWith('--format')) {
+      const [flag, valueMaybe] = token.split('=');
+      if (valueMaybe) {
+        parsed.format = valueMaybe;
+        i += 1;
+        continue;
       }
-      
-      return 0;
-    } catch (error) {
-      if (error instanceof UsageError) throw error;
-      throw new UsageError(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      const next = argv[i + 1];
+      if (!next) {
+        throw new Error("Missing value for --format");
+      }
+      parsed.format = next;
+      i += 2;
+      continue;
+    }
+    if (token.startsWith('-')) {
+      throw new Error(`Unknown option: ${token}`);
+    }
+    if (!parsed.folderPath) {
+      parsed.folderPath = token;
+      i += 1;
+      continue;
+    }
+    // Extra positional arguments are ignored
+    i += 1;
+  }
+  return parsed;
+}
+
+async function generatePrefix(folderPath: string, format: string, verbose: boolean, alsoDirs: string[]): Promise<string> {
+  const targetFolder = resolve(folderPath);
+  const datePrefix = getCurrentDatePrefix(format);
+
+  if (verbose) {
+    process.stdout.write(`Scanning ${targetFolder} for ${datePrefix}*\n`);
+    process.stdout.write(`Using date format: ${format}\n`);
+    if (alsoDirs.length > 0) {
+      const resolvedAlso = alsoDirs.map(d => resolve(d));
+      process.stdout.write(`Also scanning: ${resolvedAlso.join(', ')}\n`);
     }
   }
 
-  private getCurrentDatePrefix(): string {
-    const now = new Date();
-    
-    // Map common format patterns to implementation
-    switch (this.format) {
-      case 'yyMMdd':
-        return this.formatYYMMDD(now);
-      case 'yyyyMMdd':
-        return this.formatYYYYMMDD(now);
-      case 'yyyy-MM-dd':
-        return this.formatYYYYDashMMDashDD(now);
-      case 'yy-MM-dd':
-        return this.formatYYDashMMDashDD(now);
-      default:
-        // For custom formats, fall back to the provided format as-is
-        // In a more complete implementation, this could use a date formatting library
-        this.context.stderr.write(`Warning: Custom format '${this.format}' used as-is. Consider using standard formats.\n`);
-        return this.format;
+  let files: string[];
+  try {
+    files = await readdir(targetFolder);
+  } catch (err: any) {
+    if (err && err.code === 'ENOENT') {
+      throw new Error(`Folder not found: ${targetFolder}`);
+    }
+    throw err;
+  }
+
+  // Read additional directories and collect their files
+  for (const dir of alsoDirs) {
+    const abs = resolve(dir);
+    try {
+      const extra = await readdir(abs);
+      files.push(...extra);
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        if (verbose) process.stderr.write(`Warning: Also-scan folder not found: ${abs}\n`);
+        continue;
+      }
+      throw err;
     }
   }
 
-  private formatYYMMDD(date: Date): string {
-    const year = date.getFullYear().toString().slice(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}${month}${day}`;
+  const pattern = new RegExp(`^${escapeRegExp(datePrefix)}([a-z])_`);
+  const usedLetters = new Set(
+    files
+      .map(file => file.match(pattern)?.[1])
+      .filter(Boolean) as string[]
+  );
+
+  if (verbose && usedLetters.size > 0) {
+    process.stdout.write(`Found existing prefixes: ${Array.from(usedLetters).sort().join(', ')}\n`);
   }
 
-  private formatYYYYMMDD(date: Date): string {
-    const year = date.getFullYear().toString();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}${month}${day}`;
-  }
+  const nextLetter = 'abcdefghijklmnopqrstuvwxyz'
+    .split('')
+    .find(letter => !usedLetters.has(letter)) || 'a';
 
-  private formatYYYYDashMMDashDD(date: Date): string {
-    const year = date.getFullYear().toString();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const result = `${datePrefix}${nextLetter}_`;
+  if (verbose) {
+    process.stdout.write(`\nNext available prefix: ${result}\n`);
   }
+  return result;
+}
 
-  private formatYYDashMMDashDD(date: Date): string {
-    const year = date.getFullYear().toString().slice(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  private escapeRegExp(string: string): string {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function getCurrentDatePrefix(format: string): string {
+  const now = new Date();
+  switch (format) {
+    case 'yyMMdd':
+      return formatYYMMDD(now);
+    case 'yyyyMMdd':
+      return formatYYYYMMDD(now);
+    case 'yyyy-MM-dd':
+      return formatYYYYDashMMDashDD(now);
+    case 'yy-MM-dd':
+      return formatYYDashMMDashDD(now);
+    default:
+      process.stderr.write(`Warning: Custom format '${format}' used as-is. Consider using standard formats.\n`);
+      return format;
   }
 }
 
-const cli = new Cli({
-  binaryName: 'sequential-datetime-prefix',
-  binaryLabel: 'Sequential DateTime Prefix Generator',
-  binaryVersion: '1.0.0',
-});
+function formatYYMMDD(date: Date): string {
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}${month}${day}`;
+}
 
-cli.register(SequentialDatetimePrefixCommand);
-cli.runExit(process.argv.slice(2));
+function formatYYYYMMDD(date: Date): string {
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
+function formatYYYYDashMMDashDD(date: Date): string {
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatYYDashMMDashDD(date: Date): string {
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function escapeRegExp(input: string): string {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function main(): Promise<void> {
+  try {
+    const { folderPath, verbose, format, alsoDirs } = parseArgs(process.argv.slice(2));
+    if (!folderPath) {
+      process.stderr.write('Usage: sequential-datetime-prefix <folder> [--format <pattern>] [--also <dir>]... [-v|--verbose]\n');
+      process.exitCode = 1;
+      return;
+    }
+    const result = await generatePrefix(folderPath, format, verbose, alsoDirs);
+    process.stdout.write(`${result}\n`);
+  } catch (err: any) {
+    process.stderr.write(`Error: ${err instanceof Error ? err.message : String(err)}\n`);
+    process.exitCode = 1;
+  }
+}
+
+main();
