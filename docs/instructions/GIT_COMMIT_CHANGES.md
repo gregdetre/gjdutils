@@ -16,7 +16,9 @@ ABOVE ALL, don't do anything that could result in lost work or mess up yet-to-be
 - The codebase should (ideally) be in a working state after each commit.
 - Try not to mix unrelated changes.
 - Before making the commit, list all files that will be committed.
-- IMPORTANT If this is being run in a conversation, only commit changes relevant to this conversation.
+- IMPORTANT If this is being run in a conversation, only commit changes relevant to this conversation. (Still use reset/add/commit single-command chaining)
+- When choosing the order of batches, prefer batches that concern files with older modification dates, in order to make it less likely that another agent is still working on them.
+
 
 ### Commit Message Format
 ```
@@ -47,6 +49,11 @@ There may be other agents changing the code while you work, and they might have 
   - This is especially important for SvelteKit routes with brackets: `[param]`
 
 
+### Gitignore
+
+If you notice files that almost certainly shouldn't be committed (e.g. `node_modules`, `passwords.secret`), read the `.gitignore`, and stop to ask the user whether to add them to it.
+
+
 ## Parallel AI Assistance
 
-Run this with parallel AI assistance unless there is a good reason not to. Provide it with lots of context about what we've been doing that will help it to make good decisions and write a good commit message.
+Run this with parallel AI subagents unless there is a good reason not to. Provide it with lots of context about what we've been doing that will help it to make good decisions and write a good commit message.
