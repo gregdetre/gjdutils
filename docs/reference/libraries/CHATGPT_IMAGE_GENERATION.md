@@ -54,6 +54,8 @@ gjdutils images generate "A watercolor painting of a fox in a forest" \
 - `--aspect-ratio`: e.g., `1:1`, `16:9`, `9:16` (mutually exclusive with `--size`)
 - `--env-file`: defaults to `.env.local`; parsed only if `OPENAI_API_KEY` missing from env
 - `--stream/--no-stream`: accepted but images are returned non-streaming
+- `--embed-metadata/--no-embed-metadata`: when output is `.png`, embeds prompt and key parameters
+  as PNG text chunks (`Prompt`, `Parameters` JSON). Default: embed.
 
 Examples:
 
@@ -102,6 +104,7 @@ pathlib.Path("fox.png").write_bytes(base64.b64decode(img_b64))
 - **Keep prompts clear**: specify style, subject, medium, and constraints.
 - **Use `--seed`**: for iterative experimentation.
 - **Save with versioning**: pick filenames that encode prompt or seed, or save to a dated folder.
+- **Embed metadata**: keep `--embed-metadata` on to preserve the prompt/parameters inside PNG files.
 
 ## Common gotchas
 

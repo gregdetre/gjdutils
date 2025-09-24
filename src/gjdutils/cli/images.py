@@ -1,4 +1,7 @@
 import base64
+import io
+import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -82,6 +85,11 @@ def generate(
         "--env-file",
         help="Path to env file containing OPENAI_API_KEY. Default: .env.local",
     ),
+    embed_metadata: bool = typer.Option(
+        True,
+        "--embed-metadata/--no-embed-metadata",
+        help="Embed prompt and parameters in PNG metadata (if output is .png). Default: embed",
+    ),
 ):
     """Generate one or more images and write them to disk."""
 
@@ -126,6 +134,33 @@ def generate(
         if b64:
             image_bytes = base64.b64decode(b64)
             path.parent.mkdir(parents=True, exist_ok=True)
+            if embed_metadata and path.suffix.lower() == ".png":
+                try:
+                    from PIL import Image
+                    from PIL.PngImagePlugin import PngInfo
+
+                    meta = {
+                        "prompt": prompt,
+                        "model": model,
+                        "n": n,
+                        "seed": seed,
+                        "size": size,
+                        "aspect_ratio": aspect_ratio,
+                        "effective_size": effective_size,
+                        "openai_created": getattr(result, "created", None),
+                        "generator": "gjdutils images generate",
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }
+                    img = Image.open(io.BytesIO(image_bytes))
+                    pnginfo = PngInfo()
+                    pnginfo.add_text("Prompt", prompt)
+                    pnginfo.add_text("Parameters", json.dumps(meta, ensure_ascii=False))
+                    img.save(path, format="PNG", pnginfo=pnginfo)
+                    typer.echo(f"Wrote {path} (with metadata)")
+                    return
+                except Exception:
+                    # Fallback to raw bytes
+                    pass
             path.write_bytes(image_bytes)
             typer.echo(f"Wrote {path}")
             return
