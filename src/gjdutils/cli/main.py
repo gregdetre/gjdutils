@@ -3,6 +3,7 @@ import typer
 from gjdutils.shell import fatal_error_msg
 from .pypi import app as pypi_app
 from .check_git_clean import check_git_clean
+from .images import app as images_app
 
 app = typer.Typer(
     help="GJDutils CLI - utility functions for data science, AI, and web development",
@@ -13,6 +14,7 @@ app = typer.Typer(
 
 # Add PyPI commands
 app.add_typer(pypi_app, name="pypi")
+app.add_typer(images_app, name="images")
 
 
 @app.command()
