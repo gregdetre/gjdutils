@@ -3,7 +3,7 @@ import io
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import typer
 
@@ -18,6 +18,12 @@ app = typer.Typer(
     no_args_is_help=True,
     context_settings={"help_option_names": ["-h", "--help"]},
 )
+
+
+class ImageMode(str):
+    GENERATE = "generate"
+    EDIT = "edit"
+    VARIATION = "variation"
 
 
 def _ensure_api_key_loaded(env_file: Optional[Path]) -> str:
@@ -90,6 +96,22 @@ def generate(
         "--embed-metadata/--no-embed-metadata",
         help="Embed prompt and parameters in PNG metadata (if output is .png). Default: embed",
     ),
+    mode: str = typer.Option(
+        ImageMode.GENERATE,
+        "--mode",
+        help="Operation mode: generate (default), edit, or variation",
+    ),
+    input: Optional[List[Path]] = typer.Option(
+        None,
+        "--input",
+        "-i",
+        help="Path(s) to input image(s). Used with --mode edit (1+ images) or variation (exactly 1).",
+    ),
+    mask: Optional[Path] = typer.Option(
+        None,
+        "--mask",
+        help="Optional mask image (PNG with transparent regions to edit). Used with --mode edit.",
+    ),
 ):
     """Generate one or more images and write them to disk."""
 
@@ -117,12 +139,72 @@ def generate(
     if aspect_ratio:
         effective_size = map_aspect_ratio_to_size(aspect_ratio)
 
-    result = client.images.generate(
-        model=model,
-        prompt=prompt,
-        n=n,
-        size=effective_size,  # type: ignore[arg-type]
-    )
+    # Branch by mode
+    result = None
+    mode_normalized = (mode or ImageMode.GENERATE).lower().strip()
+
+    if mode_normalized == ImageMode.GENERATE:
+        # Ignore input/mask if provided
+        result = client.images.generate(
+            model=model,
+            prompt=prompt,
+            n=n,
+            size=effective_size,  # type: ignore[arg-type]
+        )
+
+    elif mode_normalized == ImageMode.EDIT:
+        # Require at least one input image
+        if not input or len(input) == 0:
+            raise typer.BadParameter("--input is required for --mode edit (one or more images).")
+
+        # Open input files
+        image_files = [p for p in input]
+        opened_images = []
+        opened_mask = None
+        try:
+            for p in image_files:
+                opened_images.append(p.open("rb"))
+            if mask is not None:
+                opened_mask = mask.open("rb")
+
+            # Pass single file or list depending on count
+            image_param = opened_images[0] if len(opened_images) == 1 else opened_images
+
+            result = client.images.edits(
+                model=model,
+                image=image_param,  # type: ignore[arg-type]
+                mask=opened_mask if opened_mask is not None else NOT_GIVEN,
+                prompt=prompt,
+                n=n,
+                size=effective_size,  # type: ignore[arg-type]
+            )
+        finally:
+            for f in opened_images:
+                try:
+                    f.close()
+                except Exception:
+                    pass
+            if opened_mask is not None:
+                try:
+                    opened_mask.close()
+                except Exception:
+                    pass
+
+    elif mode_normalized == ImageMode.VARIATION:
+        # Require exactly one input image
+        if not input or len(input) != 1:
+            raise typer.BadParameter("--input must be provided exactly once for --mode variation.")
+        image_path = input[0]
+        with image_path.open("rb") as f:
+            result = client.images.variations(
+                model=model,
+                image=f,
+                n=n,
+                size=effective_size,  # type: ignore[arg-type]
+            )
+
+    else:
+        raise typer.BadParameter("--mode must be one of: generate, edit, variation")
 
     # Write images to files
     data_items = getattr(result, "data", None) or []
