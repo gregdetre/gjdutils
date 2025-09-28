@@ -1,5 +1,7 @@
 # Git Commit Guidelines
 
+See also: `GIT_SUBMODULES.md` – managing submodule updates and parent pointers
+
 ## Initial Assessment
 Have a look at Git diff. Batch the changes into commits, and make them one at a time.
 
