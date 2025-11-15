@@ -16,7 +16,7 @@ They should refer to one another, and avoid too much overlap in content, so that
 
 # Format
 
-They should be written in Markdown, stored as `../reference/TOPIC_NAME.md` for reference documentation or `TOPIC_NAME.md` for instructional content.
+They should be written in Markdown, stored as `TOPIC_NAME.md` (e.g. in `docs/project/`, `docs/reference/`, `docs/instructions/` or similar), following project-specific documentation guidelines (for example an `AGENTS.md` or local docs README) for storage.
 
 ## Filename Guidelines
 
