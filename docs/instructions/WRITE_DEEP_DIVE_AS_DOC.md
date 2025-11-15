@@ -9,80 +9,36 @@ Then write this up as a detailed reference doc, following the instructions in `W
 ## Process Guidelines
 
 ### 1. Clarify the Scope
-Before diving into research, ask:
+Before diving into research, ask questions if it will help:
 - What specific aspects of the topic are most important?
 - What's the intended use case or application?
 - Are there particular problems you're trying to solve?
 - How deep should the technical detail go?
 - What's the target audience for this documentation?
+- etc
 
 ### 2. Research Strategy
 - **Start broad** - Get an overview of the topic and ecosystem
 - **Go specific** - Focus on the aspects most relevant to your needs
 - **Check recency** - Note dates on articles, especially for fast-moving technologies
-- **Multiple sources** - Cross-reference information from different authorities
+- **Multiple sources** - Cross-reference information, taking into account authoritativeness
 - **Practical focus** - Prioritize actionable information over theory
 
 ### 3. Documentation Structure
-Follow `WRITE_EVERGREEN_DOC.md` format:
+Loosely follow `WRITE_EVERGREEN_DOC.md` format as appropriate, e.g.:
 - **Overview** - What is this technology/concept?
+- **Resources** - Links to official docs, tutorials, tools
 - **Use cases** - When and why to use it
 - **Getting started** - Quick setup or hello world
 - **Key concepts** - Essential understanding
 - **Best practices** - Proven approaches and patterns
-- **Common gotchas** - Known issues and how to avoid them
-- **Resources** - Links to official docs, tutorials, tools
+- **Risks/gotchas** - Known issues, e.g. recent API changes, common/likely confusions & error messages, risks, etc
+- etc
 
 ### 4. Source Attribution
-- **Direct links** - Include URLs for all referenced sources
+- **Direct links** - Include URLs (or file paths, or whatever's appropriate) for all referenced sources
 - **Date notation** - Note when sources were published/accessed
 - **Authority assessment** - Prefer official docs, established experts, recent sources
 - **Code attribution** - Reference any code examples with their source
 
-## Content Quality Standards
-
-### Technical Accuracy
-- Cross-reference information across multiple sources
-- Test code examples if possible
-- Note when information is based on specific versions
-- Flag areas where practices are evolving quickly
-
-### Practical Value
-- Include working code examples with explanations
-- Document common setup issues and solutions
-- Provide migration paths from alternative solutions
-- Include performance and security considerations
-
-### Maintainability
-- Structure content for easy updates
-- Use clear section headers for findability
-- Include "last updated" dates for time-sensitive content
-- Note areas that may need frequent revision
-
-## Research Areas to Cover
-
-### Technology Overview
-- What problem does it solve?
-- How does it compare to alternatives?
-- What's the ecosystem and community like?
-- What are the licensing and cost considerations?
-
-### Implementation Details
-- Installation and setup requirements
-- Configuration options and best practices
-- Integration patterns with common frameworks
-- Testing and debugging approaches
-
-### Real-World Usage
-- Performance characteristics
-- Scalability considerations
-- Security implications
-- Common deployment patterns
-
-### Troubleshooting
-- Known issues and workarounds
-- Common error messages and solutions
-- Debugging tools and techniques
-- Community resources for help
-
-Remember: The goal is to create a reference that will save time and prevent common mistakes in future projects. Focus on the information that would be most valuable to someone implementing this technology.
+Remember: The goal is to create a reference that will explain, be up-to-date, help with decision-making, save time, and/or prevent mistakes/issues/surprises. Be proactive. Focus on the information that would be most valuable given the user's intent. Highlight anything worthy of remark.
